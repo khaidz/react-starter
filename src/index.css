@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+/* ── Mantine input placeholder size ── */
+.mantine-Input-input input::placeholder,
+input.mantine-Input-input::placeholder{
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.mantine-Input-input:disabled,
+.mantine-Input-input input:disabled{
+  color: #171c22;
+  opacity: 0.9;
+}

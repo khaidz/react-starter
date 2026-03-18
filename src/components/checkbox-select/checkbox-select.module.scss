@@ -1,0 +1,88 @@
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.75rem;
+  transition: border-color 0.1s;
+  min-width: 0;
+
+  &:hover {
+    border-color: #adb5bd;
+  }
+}
+
+.triggerOpen {
+  border-color: #228be6;
+  outline: 1px solid #228be6;
+}
+
+.placeholder {
+  color: #adb5bd;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.value {
+  color: #1a1a1a;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: #868e96;
+  display: flex;
+  align-items: center;
+}
+
+.chevron {
+  transition: transform 0.15s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 160px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover {
+    background: #f8f9fa;
+  }
+}
+
+.checkboxRoot {
+  width: 100%;
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  font-size: 0.8125rem;
+  cursor: pointer;
+  padding-left: 8px;
+}
