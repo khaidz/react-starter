@@ -1,0 +1,280 @@
+// ── Stat cards ───────────────────────────────────────────
+.statCard {
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 110px;
+  position: relative;
+  overflow: hidden;
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9ca3af;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.15;
+}
+
+.statChange {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.up   { color: #16a34a; }
+  &.down { color: #dc2626; }
+}
+
+.statChart {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  opacity: 0.7;
+}
+
+// ── Chart card ───────────────────────────────────────────
+.chartCard {
+  padding: 1.25rem !important;
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.chartTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+// ── Quick Actions ────────────────────────────────────────
+.quickCard {
+  padding: 1.25rem !important;
+  height: 100%;
+}
+
+.sectionTitle {
+  font-size: 0.929rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.actionItem {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e5e7eb;
+  text-decoration: none;
+
+  &:hover { background: #f4f7fa; }
+
+  &.primary {
+    background: #004b8d;
+    border-color: #004b8d;
+
+    .actionTitle { color: #fff; }
+    .actionDesc  { color: rgba(255, 255, 255, 0.7); }
+
+    &:hover { background: #003d75; }
+  }
+}
+
+.actionIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.actionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.actionDesc {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.3;
+}
+
+// ── VIB Card ─────────────────────────────────────────────
+.vibCard {
+  background: linear-gradient(135deg, #004b8d 0%, #0069c4 100%);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    right: 30px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.vibCardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.vibCardName {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.vibCardType {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.vibCardNumber {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
+
+.vibCardFooter {
+  display: flex;
+  justify-content: space-between;
+}
+
+.vibCardField {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.1rem;
+}
+
+.vibCardValue {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+// ── Quick Transfer ────────────────────────────────────────
+.transferRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.transferAvatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+
+  span {
+    font-size: 0.68rem;
+    color: #6b7280;
+  }
+}
+
+// ── Transactions ─────────────────────────────────────────
+.txCard {
+  padding: 1.25rem !important;
+}
+
+.txHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.txItem {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+
+  &:last-child { border-bottom: none; }
+}
+
+.txIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.txInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.txName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.txMeta {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.txAmount {
+  font-size: 0.929rem;
+  font-weight: 700;
+
+  &.negative { color: #dc2626; }
+  &.positive { color: #16a34a; }
+}

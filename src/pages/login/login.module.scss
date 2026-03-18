@@ -1,0 +1,83 @@
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem !important;
+
+  @media (max-width: 480px) {
+    padding: 2rem 1.2rem !important;
+  }
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+.cardSubtitle {
+  text-align: center;
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+}
+
+.fieldLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+
+  span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #374151;
+  }
+}
+
+.forgotLink {
+  font-size: 0.857rem;
+  color: #f37021;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.submitBtn {
+  background: linear-gradient(90deg, #f37021, #e85d0a) !important;
+  border: none !important;
+  height: 40px !important;
+  font-weight: 500 !important;
+
+  &:hover {
+    background: linear-gradient(90deg, #cc5e1b, #d45209) !important;
+  }
+}
+
+.qrBtn {
+  border-color: #e5e7eb !important;
+  color: #374151 !important;
+  height: 40px !important;
+
+  &:hover {
+    background-color: #f4f7fa !important;
+  }
+}
+
+.bottomText {
+  text-align: center;
+  color: #9ca3af;
+
+  a {
+    color: #f37021;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

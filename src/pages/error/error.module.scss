@@ -1,0 +1,141 @@
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at -10% -10%, rgba(0, 75, 141, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 110% 110%, rgba(243, 112, 33, 0.12) 0%, transparent 50%),
+    #f8f6f6;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2.5rem;
+
+  @media (max-width: 480px) {
+    padding: 1rem 1.25rem;
+  }
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.illustration {
+  animation: float 3.5s ease-in-out infinite;
+  margin-bottom: 2rem;
+  user-select: none;
+}
+
+.code {
+  font-size: 7rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #004b8d, #0069c4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+
+  @media (max-width: 480px) {
+    font-size: 5rem;
+  }
+}
+
+.code500 {
+  background: linear-gradient(135deg, #dc2626, #f37021);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.desc {
+  font-size: 0.929rem;
+  color: #6b7280;
+  max-width: 400px;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+
+  img {
+    width: 36px;
+    height: 36px;
+  }
+
+  span {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #004b8d;
+  }
+}
+
+.supportBtn {
+  border-color: #f37021 !important;
+  color: #f37021 !important;
+  border-radius: 6rem !important;
+
+  &:hover {
+    background-color: #fef3eb !important;
+  }
+}
+
+.detail {
+  margin-top: 2rem;
+  padding: 1rem 1.5rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
+  text-align: left;
+}
+
+.detailLabel {
+  font-size: 0.714rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  margin-bottom: 0.4rem;
+}
+
+.detailMsg {
+  font-size: 0.857rem;
+  color: #dc2626;
+  font-family: monospace;
+  word-break: break-all;
+}

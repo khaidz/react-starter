@@ -1,0 +1,200 @@
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #002b6b;
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+// ── Dropzone ─────────────────────────────────────────────
+.dropzoneWrapper {
+  border: 2px dashed #d1d5db;
+  border-radius: 16px;
+  background: #fff;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover,
+  &.active {
+    border-color: #f5821f;
+    background: #fff9f5;
+  }
+}
+
+.dropzoneIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #fff0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.dropzoneTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.3rem;
+}
+
+.dropzoneHint {
+  font-size: 0.857rem;
+  color: #9ca3af;
+}
+
+.dropzoneDivider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  width: 100%;
+  max-width: 240px;
+  color: #d1d5db;
+  font-size: 0.857rem;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+  }
+}
+
+.browseBtn {
+  background: #f5821f !important;
+  border: none !important;
+  height: 44px !important;
+  padding: 0 2rem !important;
+  font-size: 0.929rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+
+  &:hover {
+    background: #e07210 !important;
+  }
+}
+
+// ── File list ─────────────────────────────────────────────
+.fileList {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fileItem {
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.fileRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.fileIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fileName {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filePct {
+  font-size: 0.857rem;
+  font-weight: 700;
+  color: #f5821f;
+  flex-shrink: 0;
+}
+
+.fileStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.35rem;
+}
+
+// ── Footer bar ────────────────────────────────────────────
+.footerBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+  padding: 0 0.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.footerMeta {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.footerItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.historyLink {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #002b6b;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ── Success alert ─────────────────────────────────────────
+.successAlert {
+  margin-top: 1.5rem;
+  background: #f0fdf4 !important;
+  border: 1px solid #bbf7d0 !important;
+  border-radius: 12px !important;
+  padding: 1rem 1.25rem !important;
+}
