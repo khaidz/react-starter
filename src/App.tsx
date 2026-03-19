@@ -10,7 +10,8 @@ import { globalLoading } from '@/store/loading.store'
 const HomePage    = lazy(() => import('@/pages/home').then((m) => ({ default: m.HomePage })))
 const LoginPage   = lazy(() => import('@/pages/login').then((m) => ({ default: m.LoginPage })))
 const ReportsPage = lazy(() => import('@/pages/reports').then((m) => ({ default: m.ReportsPage })))
-const UploadPage  = lazy(() => import('@/pages/upload').then((m) => ({ default: m.UploadPage })))
+const UploadPage    = lazy(() => import('@/pages/upload').then((m) => ({ default: m.UploadPage })))
+const SettingsPage  = lazy(() => import('@/pages/settings').then((m) => ({ default: m.SettingsPage })))
 
 /** Hiện global loading khi Suspense đang chờ chunk tải */
 function PageLoader() {
@@ -39,7 +40,8 @@ function App() {
               <Route element={<MainLayout />}>
                 <Route path="/"        element={<HomePage />} />
                 <Route path="/reports" element={<ReportsPage />} />
-                <Route path="/upload"  element={<UploadPage />} />
+                <Route path="/upload"    element={<UploadPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
               </Route>
             </Route>
 
