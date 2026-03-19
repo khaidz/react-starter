@@ -1,0 +1,479 @@
+// ─── Page ─────────────────────────────────────────────
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pageTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.pageSubtitle {
+  font-size: 0.857rem;
+  color: #6b7280;
+  margin-top: 0.2rem;
+}
+
+// ─── Two-column layout ────────────────────────────────
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.25rem;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.configCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+// ─── Section card ─────────────────────────────────────
+.section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.sectionTitle {
+  font-size: 0.857rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.fieldLabel {
+  font-size: 0.714rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.req { color: #ef4444; }
+
+// ─── Data type grid ───────────────────────────────────
+.typeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.typeCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  position: relative;
+
+  &:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+}
+
+.typeCardActive {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.typeIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.typeText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.typeLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.typeDesc {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.typeCheck {
+  flex-shrink: 0;
+}
+
+// ─── Date range ───────────────────────────────────────
+.dateRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.5rem;
+  align-items: end;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dateField {
+  display: flex;
+  flex-direction: column;
+}
+
+.dateSep {
+  font-size: 1rem;
+  color: #9ca3af;
+  padding-bottom: 0.6rem;
+  user-select: none;
+
+  @media (max-width: 560px) {
+    display: none;
+  }
+}
+
+.quickRanges {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.quickBtn {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1.5px solid #e5e7eb;
+  background: #f8fafc;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: #004b8d;
+    color: #004b8d;
+    background: #eff6ff;
+  }
+}
+
+// ─── Columns ──────────────────────────────────────────
+.colsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.colsActions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.colsAction {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #004b8d;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  &:hover { text-decoration: underline; }
+}
+
+.colsDot {
+  color: #d1d5db;
+  font-size: 0.75rem;
+}
+
+.colsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ─── Format cards ─────────────────────────────────────
+.formatRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.formatCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0.5rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+
+  &:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+}
+
+.formatActive {
+  background: #fafafa;
+}
+
+.formatLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.formatExt {
+  font-size: 0.68rem;
+  color: #9ca3af;
+}
+
+// ─── Summary card ─────────────────────────────────────
+.summaryCol {
+  position: sticky;
+  top: 80px;
+}
+
+.summaryCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+
+.summaryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.summaryKey {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.summaryVal {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: right;
+}
+
+.summaryEmpty {
+  color: #d1d5db;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.progressWrap {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.progressLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.progressPct {
+  margin-left: auto;
+  font-weight: 700;
+  color: #f37021;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.spinIcon {
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+// ─── History table ────────────────────────────────────
+.historyTable {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.historyHead {
+  display: grid;
+  grid-template-columns: 90px 1fr 180px 80px 100px 160px 110px 44px;
+  gap: 0;
+  background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+
+  span {
+    padding: 0.65rem 0.875rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+  }
+
+  @media (max-width: 1100px) {
+    display: none;
+  }
+}
+
+.historyRow {
+  display: grid;
+  grid-template-columns: 90px 1fr 180px 80px 100px 160px 110px 44px;
+  gap: 0;
+  border-bottom: 1px solid #f8fafc;
+  transition: background 0.15s;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: #fafafa; }
+
+  span {
+    padding: 0.8rem 0.875rem;
+    font-size: 0.8rem;
+    color: #374151;
+    display: flex;
+    align-items: center;
+  }
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+    padding: 0.875rem;
+    gap: 0.35rem;
+
+    span {
+      padding: 0;
+      &:not(:nth-child(2)):not(:nth-child(7)) { display: none; }
+    }
+  }
+}
+
+.jobId {
+  font-weight: 700;
+  color: #64748b !important;
+  font-size: 0.72rem !important;
+  font-family: monospace;
+}
+
+.jobType {
+  font-weight: 600 !important;
+  color: #1e293b !important;
+}
+
+.jobRange {
+  color: #6b7280 !important;
+  font-size: 0.75rem !important;
+}
+
+.jobRows {
+  color: #6b7280 !important;
+  font-size: 0.75rem !important;
+}
+
+.jobDate {
+  color: #9ca3af !important;
+  font-size: 0.75rem !important;
+}
+
+.fmtBadge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.downloadBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #004b8d;
+    color: #fff;
+    border-color: #004b8d;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}

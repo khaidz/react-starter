@@ -13,6 +13,7 @@ const ReportsPage = lazy(() => import('@/pages/reports').then((m) => ({ default:
 const UploadPage    = lazy(() => import('@/pages/upload').then((m) => ({ default: m.UploadPage })))
 const SettingsPage         = lazy(() => import('@/pages/settings').then((m) => ({ default: m.SettingsPage })))
 const LoanApplicationPage  = lazy(() => import('@/pages/loan-application').then((m) => ({ default: m.LoanApplicationPage })))
+const ExportPage           = lazy(() => import('@/pages/export').then((m) => ({ default: m.ExportPage })))
 
 /** Hiện global loading khi Suspense đang chờ chunk tải */
 function PageLoader() {
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/upload"    element={<UploadPage />} />
                 <Route path="/settings"          element={<SettingsPage />} />
                 <Route path="/loan-application" element={<LoanApplicationPage />} />
+                <Route path="/export"           element={<ExportPage />} />
               </Route>
             </Route>
 

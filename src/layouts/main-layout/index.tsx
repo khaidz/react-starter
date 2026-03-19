@@ -7,6 +7,7 @@ import {
   IconChartBar,
   IconCloudUpload,
   IconCreditCard,
+  IconDatabaseExport,
   IconFileAnalytics,
   IconFilePlus,
   IconLayoutDashboard,
@@ -35,7 +36,8 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/transactions', label: 'Transactions', icon: IconChartBar },
   { to: '/savings', label: 'Savings', icon: IconPigMoney },
   { to: '/reports', label: 'Báo cáo', icon: IconFileAnalytics },
-  { to: '/loan-application', label: 'Đăng ký vay', icon: IconFilePlus },
+  { to: '/loan-application', label: 'Đăng ký vay',  icon: IconFilePlus },
+  { to: '/export',           label: 'Xuất dữ liệu', icon: IconDatabaseExport },
   { to: '/upload', label: 'Upload', icon: IconCloudUpload },
   { to: '/settings', label: 'Settings', icon: IconSettings },
 ]
