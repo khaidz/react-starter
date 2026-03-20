@@ -14,7 +14,8 @@ import App from './App.tsx'
 import { GlobalLoading } from '@/components/global-loading'
 
 const inputLabelStyles = {
-  // label: { fontSize: '14px' },
+  label: { color: '#171c22', fontWeight: 400, fontSize: '0.875rem' },
+  
 }
 
 const theme = createTheme({

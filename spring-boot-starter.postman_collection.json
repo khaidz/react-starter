@@ -1245,7 +1245,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/files/e1f3b41d-5eef-4714-9e5a-5afb8208e044/preview",
+              "raw": "{{baseUrl}}/api/v1/files/14a8516c-0aea-4c50-aa24-9f43904e39e0/preview",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1253,7 +1253,7 @@
                 "api",
                 "v1",
                 "files",
-                "e1f3b41d-5eef-4714-9e5a-5afb8208e044",
+                "14a8516c-0aea-4c50-aa24-9f43904e39e0",
                 "preview"
               ]
             }
@@ -1435,6 +1435,406 @@
           ]
         },
         {
+          "name": "update profile",
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"displayName\": \"String\",\r\n  \"gender\": \"MALE\",\r\n  \"province\": \"String\",\r\n  \"birthDate\": \"1998-05-22\",\r\n  \"bio\": \"String\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "profile"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"displayName\": \"String\",\r\n  \"gender\": \"MALE\",\r\n  \"province\": \"String\",\r\n  \"birthDate\": \"1998-05-22\",\r\n  \"bio\": \"String\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/profile",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "profile"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Method"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Headers"
+                },
+                {
+                  "key": "X-Request-ID",
+                  "value": "535e8953-7239-44ed-83ba-21a5977093ec"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "0"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 16 Mar 2026 12:11:26 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"requestId\": \"535e8953-7239-44ed-83ba-21a5977093ec\",\n    \"code\": \"00000\",\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 1,\n        \"username\": \"admin\",\n        \"email\": \"admin@local.com\",\n        \"displayName\": \"String\",\n        \"gender\": \"MALE\",\n        \"province\": \"String\",\n        \"birthDate\": \"1998-05-22\",\n        \"avatarKey\": \"d82f072e-6a8c-4060-85fc-621b7dfc3aa6\",\n        \"coverKey\": \"14a8516c-0aea-4c50-aa24-9f43904e39e0\",\n        \"bio\": \"String\",\n        \"status\": \"ACTIVE\",\n        \"roles\": [\n            \"ADMIN\"\n        ],\n        \"permissions\": [],\n        \"deptCode\": \"ROOT\",\n        \"deptName\": \"root\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "update avatar",
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "fe51fb48-bc65-4b97-9e05-fc54062c8728",
+                  "src": "/C:/Users/Admin/Pictures/tai-anh-nen-PC-giuc-nua-thi-vao-ma-lam-1024x576 (1).jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/upload-avatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "upload-avatar"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "fe51fb48-bc65-4b97-9e05-fc54062c8728",
+                      "src": "/C:/Users/Admin/Pictures/tai-anh-nen-PC-giuc-nua-thi-vao-ma-lam-1024x576 (1).jpg"
+                    }
+                  ],
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/upload-avatar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "upload-avatar"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Method"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Headers"
+                },
+                {
+                  "key": "X-Request-ID",
+                  "value": "7c108b02-23d0-417d-b866-1709133aabbb"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "0"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 16 Mar 2026 11:42:59 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"requestId\": \"7c108b02-23d0-417d-b866-1709133aabbb\",\n    \"code\": \"00000\",\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 1,\n        \"username\": \"admin\",\n        \"email\": \"admin@local.com\",\n        \"displayName\": \"String\",\n        \"gender\": \"MALE\",\n        \"province\": \"String\",\n        \"birthDate\": \"1998-05-22\",\n        \"avatarKey\": \"224f77de-e1ad-4556-93ea-e5462b9bed98\",\n        \"bio\": \"String\",\n        \"status\": \"ACTIVE\",\n        \"roles\": [\n            \"ADMIN\"\n        ],\n        \"permissions\": [],\n        \"deptCode\": \"ROOT\",\n        \"deptName\": \"root\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "upload-cover",
+          "protocolProfileBehavior": {
+            "strictSSL": false,
+            "followRedirects": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "fe51fb48-bc65-4b97-9e05-fc54062c8728",
+                  "src": "/C:/Users/Admin/Pictures/esteban-bonilla-OczHGE0Xs3c-unsplash.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/upload-cover",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "upload-cover"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "fe51fb48-bc65-4b97-9e05-fc54062c8728",
+                      "src": "/C:/Users/Admin/Pictures/esteban-bonilla-OczHGE0Xs3c-unsplash.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/upload-cover",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "upload-cover"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Method"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Headers"
+                },
+                {
+                  "key": "X-Request-ID",
+                  "value": "50dbd1da-f118-4f54-886a-b9a7a1dc63b4"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "0"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 16 Mar 2026 11:44:02 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"requestId\": \"50dbd1da-f118-4f54-886a-b9a7a1dc63b4\",\n    \"code\": \"00000\",\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 1,\n        \"username\": \"admin\",\n        \"email\": \"admin@local.com\",\n        \"displayName\": \"String\",\n        \"gender\": \"MALE\",\n        \"province\": \"String\",\n        \"birthDate\": \"1998-05-22\",\n        \"avatarKey\": \"224f77de-e1ad-4556-93ea-e5462b9bed98\",\n        \"coverKey\": \"14a8516c-0aea-4c50-aa24-9f43904e39e0\",\n        \"bio\": \"String\",\n        \"status\": \"ACTIVE\",\n        \"roles\": [\n            \"ADMIN\"\n        ],\n        \"permissions\": [],\n        \"deptCode\": \"ROOT\",\n        \"deptName\": \"root\"\n    }\n}"
+            }
+          ]
+        },
+        {
           "name": "change-password",
           "protocolProfileBehavior": {
             "strictSSL": false,
@@ -1565,7 +1965,104 @@
               ]
             }
           },
-          "response": []
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/search?sort=status,asc&sort=username,asc",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "status,asc"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "username,asc"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Method"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Headers"
+                },
+                {
+                  "key": "X-Request-ID",
+                  "value": "b8df4b25-18de-40d2-a21d-e8e89e17c4f5"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "0"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 20 Mar 2026 15:59:51 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"requestId\": \"b8df4b25-18de-40d2-a21d-e8e89e17c4f5\",\n    \"code\": \"00000\",\n    \"message\": \"Success\",\n    \"data\": {\n        \"content\": [\n            {\n                \"id\": 1,\n                \"username\": \"admin\",\n                \"email\": \"admin@local.com\",\n                \"status\": \"ACTIVE\",\n                \"roles\": [\n                    \"ADMIN\"\n                ],\n                \"deptCode\": \"ROOT\",\n                \"deptName\": \"root\"\n            },\n            {\n                \"id\": 4,\n                \"username\": \"dung\",\n                \"email\": \"dung@gmail.com\",\n                \"status\": \"ACTIVE\",\n                \"roles\": [],\n                \"deptCode\": \"ROOT\",\n                \"deptName\": \"root\"\n            },\n            {\n                \"id\": 6,\n                \"username\": \"khaidz\",\n                \"email\": \"admin@gmail.com\",\n                \"status\": \"ACTIVE\",\n                \"roles\": [\n                    \"USER\"\n                ]\n            },\n            {\n                \"id\": 2,\n                \"username\": \"manager\",\n                \"email\": \"manager@local.com\",\n                \"status\": \"ACTIVE\",\n                \"roles\": [\n                    \"USER\"\n                ],\n                \"deptCode\": \"ROOT\",\n                \"deptName\": \"root\"\n            },\n            {\n                \"id\": 7,\n                \"username\": \"mrkhai18h1\",\n                \"email\": \"mrkhai18h1@gmail.com\",\n                \"status\": \"ACTIVE\",\n                \"roles\": [\n                    \"USER\"\n                ]\n            },\n            {\n                \"id\": 8,\n                \"username\": \"quangkhai9898\",\n                \"email\": \"quangkhai9898@gmail.com\",\n                \"status\": \"ACTIVE\",\n                \"roles\": [\n                    \"USER\"\n                ]\n            },\n            {\n                \"id\": 3,\n                \"username\": \"user\",\n                \"email\": \"user@local.com\",\n                \"status\": \"ACTIVE\",\n                \"roles\": [\n                    \"USER\"\n                ],\n                \"deptCode\": \"ROOT\",\n                \"deptName\": \"root\"\n            }\n        ],\n        \"page\": 1,\n        \"size\": 20,\n        \"totalElements\": 7,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
         },
         {
           "name": "get-detail",
@@ -1621,7 +2118,102 @@
               ]
             }
           },
-          "response": []
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"maii\",\r\n  \"password\": \"123123\",\r\n  \"email\": \"maii@gmail.com\",\r\n  \"status\": \"ACTIVE\",\r\n  \"roleIds\": [3],\r\n  \"deptId\": 1\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Method"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Headers"
+                },
+                {
+                  "key": "X-Request-ID",
+                  "value": "edce7a9e-6dec-4186-ae68-0bf72c95024d"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "0"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 20 Mar 2026 16:02:34 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"requestId\": \"edce7a9e-6dec-4186-ae68-0bf72c95024d\",\n    \"code\": \"00000\",\n    \"message\": \"Success\"\n}"
+            }
+          ]
         },
         {
           "name": "update",
@@ -1936,7 +2528,100 @@
               ]
             }
           },
-          "response": []
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/departments/search?keyword=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "departments",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "keyword",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Method"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Headers"
+                },
+                {
+                  "key": "X-Request-ID",
+                  "value": "9437b1f3-7fc6-48b0-be1c-810c0e9a4375"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "0"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 20 Mar 2026 16:01:08 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"requestId\": \"9437b1f3-7fc6-48b0-be1c-810c0e9a4375\",\n    \"code\": \"00000\",\n    \"message\": \"Success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"root\",\n            \"code\": \"ROOT\",\n            \"path\": \"/1/\",\n            \"depth\": 0,\n            \"active\": true\n        }\n    ]\n}"
+            }
+          ]
         },
         {
           "name": "get-detail",
@@ -2003,7 +2688,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/roles/search?name=x",
+              "raw": "{{baseUrl}}/api/v1/roles/search",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2012,16 +2697,97 @@
                 "v1",
                 "roles",
                 "search"
-              ],
-              "query": [
-                {
-                  "key": "name",
-                  "value": "x"
-                }
               ]
             }
           },
-          "response": []
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/search",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "roles",
+                    "search"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Method"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Access-Control-Request-Headers"
+                },
+                {
+                  "key": "X-Request-ID",
+                  "value": "e6f6946d-bbb1-4686-8c16-fc2e99e4dade"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "0"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 20 Mar 2026 16:00:34 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"requestId\": \"e6f6946d-bbb1-4686-8c16-fc2e99e4dade\",\n    \"code\": \"00000\",\n    \"message\": \"Success\",\n    \"data\": [\n        {\n            \"id\": 2,\n            \"name\": \"MANAGER\"\n        },\n        {\n            \"id\": 1,\n            \"name\": \"ADMIN\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"USER\"\n        }\n    ]\n}"
+            }
+          ]
         }
       ],
       "auth": {

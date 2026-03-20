@@ -1,26 +1,34 @@
+  console.log("🚀 ~ IconUsers:", IconUsers)
 import type React from 'react'
-import { ActionIcon, AppShell, Avatar, Burger, Divider, Menu, TextInput, Tooltip } from '@mantine/core'
+import {
+  ActionIcon,
+  AppShell,
+  Avatar,
+  Burger,
+  Divider,
+  Menu,
+  TextInput,
+  Tooltip,
+} from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useMutation } from '@tanstack/react-query'
 import {
   IconBell,
-  IconChartBar,
-  IconCloudUpload,
-  IconCreditCard,
-  IconDatabaseExport,
-  IconFileAnalytics,
+  IconCloudUpload, IconFileAnalytics,
   IconFilePlus,
   IconLayoutDashboard,
   IconLogout,
-  IconPigMoney,
   IconSearch,
   IconSettings,
   IconUser,
+  IconUsers
 } from '@tabler/icons-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { authApi } from '@/api/auth.api'
 import vibLogo from '@/assets/images/VIB_Logo_Symbol.svg'
 import { useAuth } from '@/hooks/use-auth'
+import { usePermission } from '@/hooks/use-permission'
+import { Permissions, Roles } from '@/lib/permissions'
 import styles from './main-layout.module.scss'
 
 interface NavItem {
@@ -28,24 +36,56 @@ interface NavItem {
   label: string
   icon: React.FC<{ size?: number }>
   end?: boolean
+  roles?: string[]
+  permissions?: string[]
 }
 
 const NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Dashboard', icon: IconLayoutDashboard, end: true },
-  { to: '/cards', label: 'My Cards', icon: IconCreditCard },
-  { to: '/transactions', label: 'Transactions', icon: IconChartBar },
-  { to: '/savings', label: 'Savings', icon: IconPigMoney },
-  { to: '/reports', label: 'Báo cáo', icon: IconFileAnalytics },
-  { to: '/loan-application', label: 'Đăng ký vay',  icon: IconFilePlus },
-  { to: '/export',           label: 'Xuất dữ liệu', icon: IconDatabaseExport },
-  { to: '/upload', label: 'Upload', icon: IconCloudUpload },
-  { to: '/settings', label: 'Settings', icon: IconSettings },
+  {
+    to: '/reports',
+    label: 'Báo cáo',
+    icon: IconFileAnalytics,
+    roles: [Roles.ADMIN],
+    permissions: [Permissions.REPORTS_VIEW],
+  },
+  {
+    to: '/loan-application',
+    label: 'Đăng ký vay',
+    icon: IconFilePlus,
+    roles: [Roles.ADMIN],
+    permissions: [Permissions.LOAN_APPLICATION_VIEW],
+  },
+  {
+    to: '/upload',
+    label: 'Upload',
+    icon: IconCloudUpload,
+    roles: [Roles.ADMIN],
+    permissions: [Permissions.UPLOAD_CREATE],
+  },
+  {
+    to: '/users',
+    label: 'Người dùng',
+    icon: IconUsers,
+    roles: [Roles.ADMIN],
+    permissions: [Permissions.USERS_VIEW],
+  },
+  {
+    to: '/settings',
+    label: 'Settings',
+    icon: IconSettings,
+    roles: [Roles.ADMIN],
+    permissions: [Permissions.SETTINGS_VIEW],
+  },
 ]
 
 export function MainLayout() {
   const [opened, { toggle, close }] = useDisclosure()
   const { user, clearAuth } = useAuth()
   const navigate = useNavigate()
+  const { can } = usePermission()
+
+  const visibleNavItems = NAV_ITEMS.filter(({ roles, permissions }) => can(roles, permissions))
 
   const { mutate: logout } = useMutation({
     mutationFn: authApi.logout,
@@ -108,7 +148,11 @@ export function MainLayout() {
                 <Menu.Item leftSection={<IconUser size={15} />}>Profile</Menu.Item>
                 <Menu.Item leftSection={<IconSettings size={15} />}>Settings</Menu.Item>
                 <Menu.Divider />
-                <Menu.Item color="red" leftSection={<IconLogout size={15} />} onClick={() => logout()}>
+                <Menu.Item
+                  color="red"
+                  leftSection={<IconLogout size={15} />}
+                  onClick={() => logout()}
+                >
                   Logout
                 </Menu.Item>
               </Menu.Dropdown>
@@ -122,7 +166,17 @@ export function MainLayout() {
         <div className={styles.navbar}>
           {/* Logo — hiển thị trong sidebar khi layout="alt" */}
           <div className={styles.navLogo}>
-            <NavLink to="/" end onClick={close} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
+            <NavLink
+              to="/"
+              end
+              onClick={close}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                textDecoration: 'none',
+              }}
+            >
               <img src={vibLogo} alt="VIB" style={{ width: 32, height: 32 }} />
               <span className={styles.logoTextSidebar}>VIB</span>
             </NavLink>
@@ -138,15 +192,13 @@ export function MainLayout() {
 
           <nav className={styles.navBody}>
             <div className={styles.navLabel}>Menu</div>
-            {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+            {visibleNavItems.map(({ to, label, icon: Icon, end }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={end}
                 onClick={close}
-                className={({ isActive }) =>
-                  `${styles.navLink} ${isActive ? styles.active : ''}`
-                }
+                className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
               >
                 <Icon size={18} />
                 {label}

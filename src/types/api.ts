@@ -28,3 +28,37 @@ export interface RefreshData {
   accessToken: string
   refreshToken: string
 }
+
+export interface PagedData<T> {
+  content: T[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type UserStatus = 'ACTIVE' | 'PENDING' | 'LOCKED' | 'DELETED'
+
+export interface UserItem {
+  id: number
+  username: string
+  email: string
+  status: UserStatus
+  roles: string[]
+  deptCode?: string
+  deptName?: string
+}
+
+export interface Role {
+  id: number
+  name: string
+}
+
+export interface Department {
+  id: number
+  name: string
+  code: string
+  path?: string
+  depth?: number
+  active: boolean
+}

@@ -14,3 +14,14 @@ body {
   font-family: 'Inter', sans-serif;
   margin: 0;
 }
+
+/* ── Mantine input placeholder size ── */
+.mantine-Input-input input::placeholder,
+input.mantine-Input-input::placeholder{
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+:root {
+  --input-disabled-color: #171c22;
+}
