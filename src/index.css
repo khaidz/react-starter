@@ -22,6 +22,8 @@ input.mantine-Input-input::placeholder{
   font-weight: 400;
 }
 
-:root {
-  --input-disabled-color: #171c22;
+.mantine-Input-input:disabled,
+.mantine-Input-input input:disabled{
+  color: #171c22;
+  opacity: 0.9;
 }

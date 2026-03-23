@@ -13,7 +13,7 @@ import {
 } from '@tabler/icons-react'
 import { departmentsApi, rolesApi, usersApi } from '@/api/users.api'
 import type { UpdateUserPayload } from '@/api/users.api'
-import type { UserItem } from '@/types/api'
+import type { UserItem, UserStatus } from '@/types/api'
 import styles from '../users.module.scss'
 
 const STATUS_OPTIONS = [
@@ -79,7 +79,7 @@ export function EditUserModal({ user, onClose }: Props) {
 
   function handleSubmit() {
     updateUser({
-      status: form.status as 'ACTIVE' | 'INACTIVE',
+      status: form.status as UserStatus,
       roleIds: form.roleIds.map(Number),
       deptId: form.deptId ? Number(form.deptId) : undefined,
     })
