@@ -16,6 +16,7 @@ import {
   IconBell,
   IconCloudUpload, IconFileAnalytics,
   IconFilePlus,
+  IconGitBranch,
   IconLayoutDashboard,
   IconLogout,
   IconSearch,
@@ -69,6 +70,13 @@ const NAV_ITEMS: NavItem[] = [
     icon: IconUsers,
     roles: [Roles.ADMIN],
     permissions: [Permissions.USERS_VIEW],
+  },
+  {
+    to: '/workflow-config',
+    label: 'Workflow Config',
+    icon: IconGitBranch,
+    roles: [Roles.ADMIN],
+    permissions: [Permissions.WORKFLOW_CONFIG_VIEW],
   },
   {
     to: '/settings',

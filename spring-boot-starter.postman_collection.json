@@ -2099,7 +2099,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"username\": \"maii\",\r\n  \"password\": \"123123\",\r\n  \"email\": \"maii@gmail.com\",\r\n  \"status\": \"ACTIVE\",\r\n  \"roleIds\": [3],\r\n  \"deptId\": 1\r\n}",
+              "raw": "{\r\n  \"username\": \"maii\",\r\n  \"password\": \"123123\",\r\n  \"email\": \"maii@gmail.com\",\r\n  \"status\": \"ACTIVE\",\r\n  \"roleIds\": [3],\r\n  \"deptId\": 1,\r\n  \"isDepartmentOwner\": false\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2226,7 +2226,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"status\": \"ACTIVE\",\r\n  \"roleIds\": [3,2],\r\n  \"deptId\": 1\r\n}",
+              "raw": "{\r\n  \"status\": \"ACTIVE\",\r\n  \"roleIds\": [3,2],\r\n  \"deptId\": 1,\r\n  \"isDepartmentOwner\": false\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2840,7 +2840,7 @@
                   "key": "file",
                   "type": "file",
                   "uuid": "519ef0a0-9028-4121-b307-1293c277a3a6",
-                  "src": "/C:/Users/Admin/Desktop/test.xlsx"
+                  "src": "/C:/Users/Admin/Downloads/test.xlsx"
                 },
                 {
                   "key": "tableName",
@@ -3342,6 +3342,654 @@
             }
           },
           "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "workflows",
+      "item": [
+        {
+          "name": "Admin Flows",
+          "item": [
+            {
+              "name": "Create Flow",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"code\": \"LEAVE_REQUEST\",\r\n  \"name\": \"Leave Request Flow\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List Flows",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Flow Detail",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/{{flowId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "{{flowId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Activate Flow",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/{{flowId}}/activate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "{{flowId}}",
+                    "activate"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Deactivate Flow",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/{{flowId}}/deactivate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "{{flowId}}",
+                    "deactivate"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Flow",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/{{flowId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "{{flowId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create New Version",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/{{flowId}}/new-version",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "{{flowId}}",
+                    "new-version"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Step",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Manager Approval\",\r\n  \"stepOrder\": 1,\r\n  \"type\": \"SEQUENTIAL\",\r\n  \"completionCondition\": \"ALL\",\r\n  \"completionThreshold\": null,\r\n  \"slaDuration\": 86400,\r\n  \"slaAction\": \"AUTO_REJECT\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/{{flowId}}/steps",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "{{flowId}}",
+                    "steps"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Step",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Manager Approval (Updated)\",\r\n  \"stepOrder\": 1,\r\n  \"type\": \"PARALLEL\",\r\n  \"completionCondition\": \"PERCENT\",\r\n  \"completionThreshold\": 50,\r\n  \"slaDuration\": 172800,\r\n  \"slaAction\": \"ESCALATE\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/steps/{{stepId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "steps",
+                    "{{stepId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Step",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/steps/{{stepId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "steps",
+                    "{{stepId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Assignee Template",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"assigneeType\": \"ROLE\",\r\n  \"assigneeValue\": \"ROLE_MANAGER\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/steps/{{stepId}}/assignees",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "steps",
+                    "{{stepId}}",
+                    "assignees"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Assignee Template",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/assignees/{{assigneeTemplateId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "assignees",
+                    "{{assigneeTemplateId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Action Template",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"actionType\": \"APPROVE\",\r\n  \"name\": \"Approve\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/steps/{{stepId}}/actions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "steps",
+                    "{{stepId}}",
+                    "actions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Action Template",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/actions/{{actionTemplateId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "actions",
+                    "{{actionTemplateId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Transition",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"fromStepId\": 1,\r\n  \"toStepId\": 2,\r\n  \"actionType\": \"APPROVE\",\r\n  \"conditionExpression\": null,\r\n  \"priority\": 0,\r\n  \"isDefault\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/transitions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "transitions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Transition",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"fromStepId\": 1,\r\n  \"toStepId\": null,\r\n  \"actionType\": \"REJECT\",\r\n  \"conditionExpression\": \"#ctx['amount'] > 1000\",\r\n  \"priority\": 1,\r\n  \"isDefault\": false\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/transitions/{{transitionId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "transitions",
+                    "{{transitionId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Transition",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/transitions/{{transitionId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "transitions",
+                    "{{transitionId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Workflows",
+          "item": [
+            {
+              "name": "Get My Tasks",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/my-tasks",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "workflows",
+                    "my-tasks"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Start Workflow",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"flowCode\": \"PURCHASE_APPROVAL\",\r\n  \"businessKey\": \"LEAVE-2026-001\",\r\n  \"contextData\": {\r\n    \"amount\": 500,\r\n    \"department\": \"IT\"\r\n  }\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/start",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "workflows",
+                    "start"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Submit Action",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"workflowInstanceId\": 3,\r\n  \"stepInstanceId\": 8,\r\n  \"actionType\": \"REJECT\",\r\n  \"comment\": \"Looks good, approved.\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/action",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "workflows",
+                    "action"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Workflow Instance",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/{{workflowInstanceId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "workflows",
+                    "{{workflowInstanceId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Workflow Timeline",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/{{workflowInstanceId}}/timeline",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "workflows",
+                    "{{workflowInstanceId}}",
+                    "timeline"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ]
         }
       ],
       "auth": {

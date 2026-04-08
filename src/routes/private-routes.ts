@@ -12,6 +12,9 @@ const LoanApplicationPage = lazy(() =>
   import('@/pages/loan-application').then((m) => ({ default: m.LoanApplicationPage })),
 )
 const UsersPage = lazy(() => import('@/pages/users').then((m) => ({ default: m.UsersPage })))
+const WorkflowConfigPage = lazy(() =>
+  import('@/pages/workflow-config').then((m) => ({ default: m.WorkflowConfigPage })),
+)
 
 export const privateRoutes: RouteConfig[] = [
   {
@@ -47,5 +50,11 @@ export const privateRoutes: RouteConfig[] = [
     component: UsersPage,
     roles: [Roles.ADMIN],
     permissions: [Permissions.USERS_VIEW],
+  },
+  {
+    path: '/workflow-config',
+    component: WorkflowConfigPage,
+    roles: [Roles.ADMIN],
+    permissions: [Permissions.WORKFLOW_CONFIG_VIEW],
   },
 ]

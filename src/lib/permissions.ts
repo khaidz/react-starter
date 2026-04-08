@@ -11,4 +11,5 @@ export const Permissions = {
   SETTINGS_VIEW:         'settings:view',
   LOAN_APPLICATION_VIEW: 'loan_application:view',
   USERS_VIEW:            'users:view',
+  WORKFLOW_CONFIG_VIEW:  'workflow_config:view',
 } as const
