@@ -16,6 +16,12 @@ export interface AssigneeTemplate {
   assigneeValue: string
 }
 
+export interface ActionTemplateItem {
+  id: number | null
+  actionType: ActionType
+  name: string
+}
+
 export interface Transition {
   id: number
   fromStepId: number
@@ -42,8 +48,7 @@ export interface FlowStep {
   allowPickup: boolean
   assignees: AssigneeTemplate[]
   transitions: Transition[]
-  /** Map: actionType → displayName (không có id riêng trong response) */
-  allowedActions: Partial<Record<ActionType, string>>
+  allowedActions: ActionTemplateItem[]
 }
 
 export interface Flow {
@@ -106,3 +111,128 @@ export interface CreateTransitionPayload {
 }
 
 export interface UpdateTransitionPayload extends CreateTransitionPayload {}
+
+// ── Workflow Runner types ────────────────────────────────────────
+
+export type WorkflowStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ERROR'
+
+export type StepStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'SKIPPED' | 'ERROR'
+
+export interface AssigneeInfo {
+  userId: string
+  displayName: string | null
+  status: string
+}
+
+export interface ActionLogEntry {
+  actionType: ActionType
+  performedBy: string
+  comment: string | null
+  createdAt: string
+}
+
+export interface StepInstance {
+  id: number
+  stepName: string
+  stepOrder: number
+  stepType: StepType
+  status: StepStatus | null
+  startTime: string | null
+  endTime: string | null
+  dueTime: string | null
+  assignees: AssigneeInfo[]
+  allowedActions: ActionTemplateItem[]
+  subWorkflowInstanceId: number | null
+  subWorkflow: SubWorkflowSummary | null
+}
+
+export interface SubWorkflowSummary {
+  id: number
+  flowCode: string
+  flowName: string
+  status: WorkflowStatus
+}
+
+export interface WorkflowInstance {
+  id: number
+  flowCode: string
+  flowName: string
+  flowVersion: number
+  businessKey: string
+  status: WorkflowStatus
+  createdBy: string
+  createdAt: string
+  parentStepInstanceId: number | null
+  steps: StepInstance[]
+}
+
+export interface StepTimeline {
+  stepOrder: number
+  stepName: string
+  stepType: StepType
+  completionCondition: string
+  status: StepStatus | null
+  startTime: string | null
+  endTime: string | null
+  dueTime: string | null
+  assignees: AssigneeInfo[]
+  actionLogs: ActionLogEntry[]
+  subFlowCode: string | null
+  subWorkflowInstanceId: number | null
+  subWorkflow: WorkflowTimeline | null
+}
+
+export interface WorkflowTimeline {
+  id: number
+  flowCode: string
+  flowName: string
+  flowVersion: number
+  businessKey: string
+  status: WorkflowStatus
+  createdBy: string
+  createdAt: string
+  parentStepInstanceId: number | null
+  steps: StepTimeline[]
+}
+
+export interface MyTask {
+  workflowInstanceId: number
+  stepInstanceId: number
+  businessKey: string
+  flowCode: string
+  flowName: string
+  stepName: string
+  startTime: string | null
+  dueTime: string | null
+  allowedActions: ActionTemplateItem[]
+}
+
+export interface StartWorkflowPayload {
+  flowCode: string
+  businessKey: string
+  contextData?: Record<string, unknown>
+}
+
+export interface SubmitActionPayload {
+  workflowInstanceId: number
+  stepInstanceId: number
+  actionType: ActionType
+  comment?: string
+  transferToUserId?: string
+}
+
+export interface Delegation {
+  id: number
+  userId: string
+  delegateeId: string
+  startAt: string
+  endAt: string | null
+  active: boolean
+  createdAt: string
+}
+
+export interface CreateDelegationPayload {
+  delegateeId: string
+  startAt: string
+  endAt?: string | null
+}

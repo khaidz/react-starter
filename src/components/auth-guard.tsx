@@ -31,8 +31,10 @@ export function AuthGuard() {
 
   // Hiện global loading lần đầu fetch profile
   useLayoutEffect(() => {
-    if (isLoading) globalLoading.show()
-    else globalLoading.hide()
+    if (isLoading) {
+      globalLoading.show()
+      return () => globalLoading.hide()
+    }
   }, [isLoading])
 
   if (!isLoggedIn) {

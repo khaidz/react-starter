@@ -22,13 +22,13 @@ import { notifications } from '@mantine/notifications'
 import { notifyError } from '@/lib/notify'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-
   IconGitBranch,
   IconPencil,
   IconPlayerPause,
   IconPlayerPlay,
   IconPlus,
   IconTrash,
+  IconX,
 } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { adminFlowsApi } from '@/api/workflow.api'
@@ -112,6 +112,15 @@ function StepCard({
     onSuccess: () => {
       invalidate()
       notifications.show({ message: 'Assignee removed', color: 'green' })
+    },
+    onError: (error) => notifyError(error),
+  })
+
+  const deleteActionMutation = useMutation({
+    mutationFn: (id: number) => adminFlowsApi.deleteAction(id),
+    onSuccess: () => {
+      invalidate()
+      notifications.show({ message: 'Action removed', color: 'green' })
     },
     onError: (error) => notifyError(error),
   })
@@ -293,13 +302,31 @@ function StepCard({
                       </Button>
                     )}
                   </Group>
-                  {Object.keys(step.allowedActions).length === 0 ? (
+                  {step.allowedActions.length === 0 ? (
                     <Text size="sm" c="dimmed" fs="italic">No actions</Text>
                   ) : (
                     <Group gap="xs">
-                      {Object.entries(step.allowedActions).map(([type, label]) => (
-                        <Badge key={type} variant="filled" size="sm" color="cyan">
-                          {label} ({type})
+                      {step.allowedActions.map((a) => (
+                        <Badge
+                          key={a.actionType}
+                          variant="filled"
+                          size="sm"
+                          color="cyan"
+                          rightSection={
+                            isDraft && a.id !== null ? (
+                              <ActionIcon
+                                size={12}
+                                color="white"
+                                variant="transparent"
+                                loading={deleteActionMutation.isPending}
+                                onClick={() => deleteActionMutation.mutate(a.id!)}
+                              >
+                                <IconX size={10} />
+                              </ActionIcon>
+                            ) : undefined
+                          }
+                        >
+                          {a.name} ({a.actionType})
                         </Badge>
                       ))}
                     </Group>

@@ -11,12 +11,13 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   IconBell,
   IconGitFork,
   IconLayoutDashboard,
   IconLogout,
+  IconPlayerPlay,
   IconSearch,
   IconSettings,
   IconUser,
@@ -48,6 +49,11 @@ const NAV_ITEMS: NavItem[] = [
     roles: [Roles.ADMIN],
   },
   {
+    to: '/workflow-runner',
+    label: 'Workflow Runner',
+    icon: IconPlayerPlay,
+  },
+  {
     to: '/settings',
     label: 'Settings',
     icon: IconSettings,
@@ -61,6 +67,7 @@ export function MainLayout() {
   const { user, clearAuth } = useAuth()
   const navigate = useNavigate()
   const { can } = usePermission()
+  const queryClient = useQueryClient()
 
   const visibleNavItems = NAV_ITEMS.filter(({ roles, permissions }) => can(roles, permissions))
 
@@ -68,6 +75,7 @@ export function MainLayout() {
     mutationFn: authApi.logout,
     onSettled: () => {
       clearAuth()
+      queryClient.clear()
       navigate('/login', { replace: true })
     },
   })
