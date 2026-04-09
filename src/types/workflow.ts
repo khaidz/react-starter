@@ -1,6 +1,6 @@
 export type FlowStatus = 'DRAFT' | 'ACTIVE' | 'INACTIVE'
 
-export type StepType = 'START' | 'SEQUENTIAL' | 'PARALLEL' | 'FINISH'
+export type StepType = 'START' | 'SEQUENTIAL' | 'PARALLEL' | 'SUB_FLOW' | 'FINISH'
 
 export type CompletionCondition = 'ALL' | 'ANY' | 'PERCENT'
 
@@ -37,6 +37,8 @@ export interface FlowStep {
   completionThreshold: number | null
   slaDuration: number | null
   slaAction: SlaAction | null
+  /** Code của sub-flow. Chỉ có giá trị khi type = SUB_FLOW. */
+  subFlowCode: string | null
   assignees: AssigneeTemplate[]
   transitions: Transition[]
   /** Map: actionType → displayName (không có id riêng trong response) */
@@ -76,6 +78,7 @@ export interface CreateStepPayload {
   completionThreshold: number | null
   slaDuration: number | null
   slaAction: SlaAction | null
+  subFlowCode: string | null
 }
 
 export interface UpdateStepPayload extends CreateStepPayload {}

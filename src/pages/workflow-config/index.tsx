@@ -9,6 +9,7 @@ import {
   Loader,
   Menu,
   Stack,
+  Switch,
   Text,
   Tooltip,
 } from '@mantine/core'
@@ -42,7 +43,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
 }
 
 const STEP_TYPE_COLOR: Record<string, string> = {
-  START: 'teal', SEQUENTIAL: 'blue', PARALLEL: 'violet', FINISH: 'green',
+  START: 'teal', SEQUENTIAL: 'blue', PARALLEL: 'violet', SUB_FLOW: 'indigo', FINISH: 'green',
 }
 
 function formatSla(seconds: number | null) {
@@ -118,7 +119,10 @@ function StepCard({ step, allSteps, flowId, onEdit }: StepCardProps) {
           <Badge size="xs" variant="light" color={STEP_TYPE_COLOR[step.type] ?? 'gray'} radius="sm">
             {step.type}
           </Badge>
-          {step.slaDuration && (
+          {step.type === 'SUB_FLOW' && step.subFlowCode && (
+            <Text className={styles.stepMeta}>↪ {step.subFlowCode}</Text>
+          )}
+          {step.slaDuration && step.type !== 'SUB_FLOW' && (
             <Text className={styles.stepMeta}>SLA: {formatSla(step.slaDuration)}</Text>
           )}
           <ActionIcon
@@ -146,62 +150,66 @@ function StepCard({ step, allSteps, flowId, onEdit }: StepCardProps) {
         <Collapse in={expanded}>
           <div className={styles.stepCardBody}>
 
-            {/* Assignees */}
-            <div className={styles.subSection}>
-              <div className={styles.subSectionHeader}>
-                <span className={styles.subSectionLabel}>Assignees</span>
-                <Tooltip label="Thêm Assignee">
-                  <ActionIcon size="xs" variant="subtle" color="blue" onClick={() => setAssigneeOpen(true)}>
-                    <IconPlus size={11} />
-                  </ActionIcon>
-                </Tooltip>
-              </div>
-              <div className={styles.subSectionItems}>
-                {(step.assignees ?? []).length === 0
-                  ? <Text size="xs" c="dimmed">Chưa có assignee</Text>
-                  : (step.assignees ?? []).map((a) => (
-                      <span key={a.id} className={styles.chipItem}>
-                        <Badge size="xs" variant="outline" color="blue" radius="sm" style={{ fontSize: 10 }}>
-                          {a.assigneeType}
-                        </Badge>
-                        {a.assigneeValue}
-                        <span className={styles.chipDelete} onClick={() => deleteAssignee(a.id)}>
-                          <IconX size={10} />
+            {/* Assignees — không dùng cho SUB_FLOW */}
+            {step.type !== 'SUB_FLOW' && (
+              <div className={styles.subSection}>
+                <div className={styles.subSectionHeader}>
+                  <span className={styles.subSectionLabel}>Assignees</span>
+                  <Tooltip label="Thêm Assignee">
+                    <ActionIcon size="xs" variant="subtle" color="blue" onClick={() => setAssigneeOpen(true)}>
+                      <IconPlus size={11} />
+                    </ActionIcon>
+                  </Tooltip>
+                </div>
+                <div className={styles.subSectionItems}>
+                  {(step.assignees ?? []).length === 0
+                    ? <Text size="xs" c="dimmed">Chưa có assignee</Text>
+                    : (step.assignees ?? []).map((a) => (
+                        <span key={a.id} className={styles.chipItem}>
+                          <Badge size="xs" variant="outline" color="blue" radius="sm" style={{ fontSize: 10 }}>
+                            {a.assigneeType}
+                          </Badge>
+                          {a.assigneeValue}
+                          <span className={styles.chipDelete} onClick={() => deleteAssignee(a.id)}>
+                            <IconX size={10} />
+                          </span>
                         </span>
-                      </span>
-                    ))
-                }
+                      ))
+                  }
+                </div>
               </div>
-            </div>
+            )}
 
-            <Divider color="#f3f4f6" />
+            {step.type !== 'SUB_FLOW' && <Divider color="#f3f4f6" />}
 
-            {/* Allowed Actions (Map từ BE — không có ID để xóa riêng lẻ) */}
-            <div className={styles.subSection}>
-              <div className={styles.subSectionHeader}>
-                <span className={styles.subSectionLabel}>Allowed Actions</span>
-                <Tooltip label="Thêm Action Template">
-                  <ActionIcon size="xs" variant="subtle" color="orange" onClick={() => setActionOpen(true)}>
-                    <IconPlus size={11} />
-                  </ActionIcon>
-                </Tooltip>
+            {/* Allowed Actions — không dùng cho SUB_FLOW */}
+            {step.type !== 'SUB_FLOW' && (
+              <div className={styles.subSection}>
+                <div className={styles.subSectionHeader}>
+                  <span className={styles.subSectionLabel}>Allowed Actions</span>
+                  <Tooltip label="Thêm Action Template">
+                    <ActionIcon size="xs" variant="subtle" color="orange" onClick={() => setActionOpen(true)}>
+                      <IconPlus size={11} />
+                    </ActionIcon>
+                  </Tooltip>
+                </div>
+                <div className={styles.subSectionItems}>
+                  {allowedActionsEntries.length === 0
+                    ? <Text size="xs" c="dimmed">Chưa có action</Text>
+                    : allowedActionsEntries.map(([type, name]) => (
+                        <span key={type} className={styles.chipItem}>
+                          <Badge size="xs" variant="light" color="orange" radius="sm" style={{ fontSize: 10 }}>
+                            {type}
+                          </Badge>
+                          {name}
+                        </span>
+                      ))
+                  }
+                </div>
               </div>
-              <div className={styles.subSectionItems}>
-                {allowedActionsEntries.length === 0
-                  ? <Text size="xs" c="dimmed">Chưa có action</Text>
-                  : allowedActionsEntries.map(([type, name]) => (
-                      <span key={type} className={styles.chipItem}>
-                        <Badge size="xs" variant="light" color="orange" radius="sm" style={{ fontSize: 10 }}>
-                          {type}
-                        </Badge>
-                        {name}
-                      </span>
-                    ))
-                }
-              </div>
-            </div>
+            )}
 
-            <Divider color="#f3f4f6" />
+            {step.type !== 'SUB_FLOW' && <Divider color="#f3f4f6" />}
 
             {/* Transitions */}
             <div className={styles.subSection}>
@@ -418,6 +426,7 @@ export function WorkflowConfigPage() {
   const queryClient = useQueryClient()
   const [createOpen, { open: openCreate, close: closeCreate }] = useDisclosure(false)
   const [selectedFlowId, setSelectedFlowId] = useState<number | null>(null)
+  const [showInactive, setShowInactive] = useState(false)
 
   const { data: flows = [], isLoading } = useQuery<FlowSummary[]>({
     queryKey: ['admin-flows'],
@@ -452,6 +461,12 @@ export function WorkflowConfigPage() {
             >
               Tạo Flow mới
             </Button>
+            <Switch
+              size="xs"
+              label="Hiện Inactive"
+              checked={showInactive}
+              onChange={(e) => setShowInactive(e.currentTarget.checked)}
+            />
           </div>
 
           <div className={styles.flowList}>
@@ -460,7 +475,7 @@ export function WorkflowConfigPage() {
                 <Loader size="sm" />
               </div>
             )}
-            {flows.map((flow) => (
+            {flows.filter((f) => showInactive || f.status !== 'INACTIVE').map((flow) => (
               <div key={flow.id} style={{ position: 'relative' }}>
                 <button
                   className={`${styles.flowItem} ${selectedFlowId === flow.id ? styles.flowItemActive : ''}`}

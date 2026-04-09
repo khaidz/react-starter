@@ -10,6 +10,7 @@ const STEP_TYPE_OPTIONS = [
   { value: 'START',       label: 'START – bước khởi đầu (auto)' },
   { value: 'SEQUENTIAL',  label: 'SEQUENTIAL – tuần tự' },
   { value: 'PARALLEL',    label: 'PARALLEL – song song' },
+  { value: 'SUB_FLOW',    label: 'SUB_FLOW – gọi flow con' },
   { value: 'FINISH',      label: 'FINISH – bước kết thúc (auto)' },
 ]
 
@@ -45,12 +46,15 @@ export function StepModal({ flowId, step, nextOrder, onClose }: Props) {
       completionThreshold: null,
       slaDuration: 86400,
       slaAction: 'AUTO_REJECT',
+      subFlowCode: null,
     },
     validate: {
       name: (v) => (!v.trim() ? 'Bắt buộc' : null),
       stepOrder: (v) => (v < 0 ? 'Phải >= 0' : null),
       completionThreshold: (v, values) =>
         values.completionCondition === 'PERCENT' && !v ? 'Bắt buộc khi chọn PERCENT' : null,
+      subFlowCode: (v, values) =>
+        values.type === 'SUB_FLOW' && !v?.trim() ? 'Bắt buộc khi type = SUB_FLOW' : null,
     },
   })
 
@@ -64,6 +68,7 @@ export function StepModal({ flowId, step, nextOrder, onClose }: Props) {
         completionThreshold: step.completionThreshold,
         slaDuration: step.slaDuration,
         slaAction: step.slaAction,
+        subFlowCode: step.subFlowCode,
       })
     } else {
       form.reset()
@@ -83,7 +88,8 @@ export function StepModal({ flowId, step, nextOrder, onClose }: Props) {
     onError: (error) => notifyError(error, isEdit ? 'Cập nhật Step thất bại' : 'Thêm Step thất bại'),
   })
 
-  const showSlaFields = form.values.type !== 'START' && form.values.type !== 'FINISH'
+  const isSubFlow = form.values.type === 'SUB_FLOW'
+  const showSlaFields = form.values.type !== 'START' && form.values.type !== 'FINISH' && !isSubFlow
 
   return (
     <Modal
@@ -100,6 +106,16 @@ export function StepModal({ flowId, step, nextOrder, onClose }: Props) {
           <NumberInput label="Thứ tự (Order)" min={0} radius="md" {...form.getInputProps('stepOrder')} />
 
           <Select label="Kiểu Step" data={STEP_TYPE_OPTIONS} radius="md" {...form.getInputProps('type')} />
+
+          {isSubFlow && (
+            <TextInput
+              label="Sub-flow Code"
+              description="Code của flow con sẽ được gọi khi bước này được kích hoạt"
+              placeholder="VD: APPROVAL_SUB"
+              radius="md"
+              {...form.getInputProps('subFlowCode')}
+            />
+          )}
 
           {showSlaFields && (
             <>
