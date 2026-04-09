@@ -14,15 +14,13 @@ import { useDisclosure } from '@mantine/hooks'
 import { useMutation } from '@tanstack/react-query'
 import {
   IconBell,
-  IconCloudUpload, IconFileAnalytics,
-  IconFilePlus,
-  IconGitBranch,
+  IconGitFork,
   IconLayoutDashboard,
   IconLogout,
   IconSearch,
   IconSettings,
   IconUser,
-  IconUsers
+  IconUsers,
 } from '@tabler/icons-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { authApi } from '@/api/auth.api'
@@ -44,39 +42,10 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Dashboard', icon: IconLayoutDashboard, end: true },
   {
-    to: '/reports',
-    label: 'Báo cáo',
-    icon: IconFileAnalytics,
-    roles: [Roles.ADMIN],
-    permissions: [Permissions.REPORTS_VIEW],
-  },
-  {
-    to: '/loan-application',
-    label: 'Đăng ký vay',
-    icon: IconFilePlus,
-    roles: [Roles.ADMIN],
-    permissions: [Permissions.LOAN_APPLICATION_VIEW],
-  },
-  {
-    to: '/upload',
-    label: 'Upload',
-    icon: IconCloudUpload,
-    roles: [Roles.ADMIN],
-    permissions: [Permissions.UPLOAD_CREATE],
-  },
-  {
-    to: '/users',
-    label: 'Người dùng',
-    icon: IconUsers,
-    roles: [Roles.ADMIN],
-    permissions: [Permissions.USERS_VIEW],
-  },
-  {
     to: '/workflow-config',
     label: 'Workflow Config',
-    icon: IconGitBranch,
+    icon: IconGitFork,
     roles: [Roles.ADMIN],
-    permissions: [Permissions.WORKFLOW_CONFIG_VIEW],
   },
   {
     to: '/settings',

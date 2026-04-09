@@ -1,127 +1,109 @@
+import { useEffect } from 'react'
 import { Button, Modal, Select, Stack, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { notifications } from '@mantine/notifications'
+import { notifyError } from '@/lib/notify'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminFlowsApi } from '@/api/workflow.api'
-import { notifyError } from '@/lib/notify'
-import type { CreateActionPayload, CreateAssigneePayload } from '@/types/workflow'
+import type { AssigneeTemplate } from '@/types/workflow'
 
 const ASSIGNEE_TYPE_OPTIONS = [
-  { value: 'ROLE',       label: 'Role' },
-  { value: 'USER',       label: 'User' },
-  { value: 'DEPT_OWNER', label: 'Dept Owner' },
+  { value: 'ROLE', label: 'Role' },
+  { value: 'USER', label: 'User' },
+  { value: 'DEPT_OWNER', label: 'Department owner' },
 ]
 
-const ACTION_TYPE_OPTIONS = [
-  { value: 'START',    label: 'START' },
-  { value: 'APPROVE',  label: 'APPROVE' },
-  { value: 'REJECT',   label: 'REJECT' },
-  { value: 'TRANSFER', label: 'TRANSFER' },
-  { value: 'EDIT',     label: 'EDIT' },
-  { value: 'SHARE',    label: 'SHARE' },
-  { value: 'FINISH',   label: 'FINISH' },
-]
-
-/* ── Add Assignee ── */
-interface AssigneeProps {
+interface Props {
+  opened: boolean
+  onClose: () => void
   stepId: number
   flowId: number
-  onClose: () => void
+  assignee?: AssigneeTemplate
 }
 
-export function AssigneeModal({ stepId, flowId, onClose }: AssigneeProps) {
+export function AssigneeModal({ opened, onClose, stepId, flowId, assignee }: Props) {
   const queryClient = useQueryClient()
+  const isEdit = !!assignee
 
-  const form = useForm<CreateAssigneePayload>({
+  const form = useForm({
     initialValues: { assigneeType: 'ROLE', assigneeValue: '' },
     validate: {
-      assigneeValue: (v) => (!v.trim() ? 'Bắt buộc' : null),
+      assigneeType: (v) => (!v ? 'Required' : null),
     },
   })
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: (payload: CreateAssigneePayload) => adminFlowsApi.addAssignee(stepId, payload),
+  useEffect(() => {
+    if (opened) {
+      form.setValues({
+        assigneeType: assignee?.assigneeType ?? 'ROLE',
+        assigneeValue: assignee?.assigneeValue ?? '',
+      })
+    }
+  }, [opened])
+
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['admin-flows', flowId] })
+
+  const addMutation = useMutation({
+    mutationFn: () =>
+      adminFlowsApi.addAssignee(stepId, {
+        assigneeType: form.values.assigneeType as never,
+        assigneeValue: form.values.assigneeValue,
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-flow-detail', flowId] })
+      invalidate()
+      notifications.show({ message: 'Assignee added', color: 'green' })
+      form.reset()
       onClose()
     },
-    onError: (error) => notifyError(error, 'Thêm Assignee thất bại'),
+    onError: (error) => notifyError(error),
   })
 
+  const editMutation = useMutation({
+    mutationFn: async () => {
+      await adminFlowsApi.deleteAssignee(assignee!.id)
+      return adminFlowsApi.addAssignee(stepId, {
+        assigneeType: form.values.assigneeType as never,
+        assigneeValue: form.values.assigneeValue,
+      })
+    },
+    onSuccess: () => {
+      invalidate()
+      notifications.show({ message: 'Assignee updated', color: 'green' })
+      form.reset()
+      onClose()
+    },
+    onError: (error) => notifyError(error),
+  })
+
+  const isPending = addMutation.isPending || editMutation.isPending
+
+  function handleClose() {
+    form.reset()
+    onClose()
+  }
+
+  const assigneeValueLabel = {
+    ROLE: 'Role name',
+    USER: 'Username',
+    DEPT_OWNER: 'Manager role name (optional)',
+  }[form.values.assigneeType]
+
   return (
-    <Modal opened onClose={onClose} title="Thêm Assignee" radius="md" size="sm">
-      <form onSubmit={form.onSubmit((v) => mutate(v))}>
-        <Stack gap="sm">
+    <Modal opened={opened} onClose={handleClose} title={isEdit ? 'Edit Assignee' : 'Add Assignee'} centered>
+      <form onSubmit={form.onSubmit(() => (isEdit ? editMutation.mutate() : addMutation.mutate()))}>
+        <Stack>
           <Select
-            label="Loại Assignee"
+            label="Assignee type"
             data={ASSIGNEE_TYPE_OPTIONS}
-            radius="md"
             {...form.getInputProps('assigneeType')}
           />
           <TextInput
-            label="Giá trị"
-            placeholder="VD: ROLE_MANAGER · username · (trống cho DEPT_OWNER)"
-            radius="md"
+            label={assigneeValueLabel}
+            placeholder="e.g. MANAGER or john.doe"
             {...form.getInputProps('assigneeValue')}
           />
-          <Button type="submit" loading={isPending} radius="md" color="vibOrange" mt="xs">
-            Thêm
-          </Button>
-        </Stack>
-      </form>
-    </Modal>
-  )
-}
-
-/* ── Add Action Template ── */
-interface ActionProps {
-  stepId: number
-  flowId: number
-  onClose: () => void
-}
-
-export function ActionModal({ stepId, flowId, onClose }: ActionProps) {
-  const queryClient = useQueryClient()
-
-  const form = useForm<CreateActionPayload>({
-    initialValues: { actionType: 'APPROVE', name: 'Phê duyệt' },
-    validate: {
-      name: (v) => (!v.trim() ? 'Bắt buộc' : null),
-    },
-  })
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: (payload: CreateActionPayload) => adminFlowsApi.addAction(stepId, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-flow-detail', flowId] })
-      onClose()
-    },
-    onError: (error) => notifyError(error, 'Thêm Action thất bại'),
-  })
-
-  return (
-    <Modal opened onClose={onClose} title="Thêm Action Template" radius="md" size="sm">
-      <form onSubmit={form.onSubmit((v) => mutate(v))}>
-        <Stack gap="sm">
-          <Select
-            label="Loại Action"
-            data={ACTION_TYPE_OPTIONS}
-            radius="md"
-            {...form.getInputProps('actionType')}
-            onChange={(v) => {
-              if (!v) return
-              form.setFieldValue('actionType', v as CreateActionPayload['actionType'])
-              // Gợi ý tên mặc định theo action type
-              const defaults: Record<string, string> = {
-                APPROVE: 'Phê duyệt', REJECT: 'Từ chối',
-                TRANSFER: 'Chuyển tiếp', EDIT: 'Chỉnh sửa',
-                SHARE: 'Chia sẻ', START: 'Bắt đầu', FINISH: 'Hoàn thành',
-              }
-              form.setFieldValue('name', defaults[v] ?? v)
-            }}
-          />
-          <TextInput label="Tên hiển thị" radius="md" {...form.getInputProps('name')} />
-          <Button type="submit" loading={isPending} radius="md" color="vibOrange" mt="xs">
-            Thêm
+          <Button type="submit" loading={isPending}>
+            {isEdit ? 'Save changes' : 'Add'}
           </Button>
         </Stack>
       </form>

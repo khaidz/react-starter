@@ -3549,7 +3549,38 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n  \"name\": \"Manager Approval\",\r\n  \"stepOrder\": 1,\r\n  \"type\": \"SEQUENTIAL\",\r\n  \"completionCondition\": \"ALL\",\r\n  \"completionThreshold\": null,\r\n  \"slaDuration\": 86400,\r\n  \"slaAction\": \"AUTO_REJECT\"\r\n}",
+                  "raw": "{\r\n  \"name\": \"Manager Approval\",\r\n  \"stepOrder\": 1,\r\n  \"type\": \"SEQUENTIAL\",\r\n  \"completionCondition\": \"ALL\",\r\n  \"completionThreshold\": null,\r\n  \"slaDuration\": 86400,\r\n  \"slaAction\": \"AUTO_REJECT\",\r\n  \"subFlowCode\": null,\r\n  \"maxRetries\": null,\r\n  \"contextMapping\": null\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/flows/{{flowId}}/steps",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "flows",
+                    "{{flowId}}",
+                    "steps"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Step (SUB_FLOW)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Sub-flow: Document Review\",\r\n  \"stepOrder\": 2,\r\n  \"type\": \"SUB_FLOW\",\r\n  \"completionCondition\": \"ALL\",\r\n  \"completionThreshold\": null,\r\n  \"slaDuration\": null,\r\n  \"slaAction\": null,\r\n  \"subFlowCode\": \"DOCUMENT_REVIEW\",\r\n  \"maxRetries\": null,\r\n  \"contextMapping\": {\r\n    \"purchaseId\": \"id\",\r\n    \"dept\": \"department\"\r\n  }\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -3580,7 +3611,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n  \"name\": \"Manager Approval (Updated)\",\r\n  \"stepOrder\": 1,\r\n  \"type\": \"PARALLEL\",\r\n  \"completionCondition\": \"PERCENT\",\r\n  \"completionThreshold\": 50,\r\n  \"slaDuration\": 172800,\r\n  \"slaAction\": \"ESCALATE\"\r\n}",
+                  "raw": "{\r\n  \"name\": \"Manager Approval (Updated)\",\r\n  \"stepOrder\": 1,\r\n  \"type\": \"PARALLEL\",\r\n  \"completionCondition\": \"PERCENT\",\r\n  \"completionThreshold\": 50,\r\n  \"slaDuration\": 172800,\r\n  \"slaAction\": \"ESCALATE\",\r\n  \"subFlowCode\": null,\r\n  \"maxRetries\": null,\r\n  \"contextMapping\": null\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -3847,20 +3878,37 @@
           "name": "Workflows",
           "item": [
             {
-              "name": "Get My Tasks",
+              "name": "Get My Tasks (paginated + filter)",
               "request": {
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/v1/workflows/my-tasks",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "workflows",
-                    "my-tasks"
+                  "raw": "{{baseUrl}}/api/v1/workflows/my-tasks?page=0&size=20",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "my-tasks"],
+                  "query": [
+                    {"key": "page", "value": "0", "description": "0-based page index"},
+                    {"key": "size", "value": "20", "description": "Page size (1-100)"},
+                    {"key": "flowCode", "value": null, "disabled": true, "description": "Filter by exact flow code"},
+                    {"key": "businessKey", "value": null, "disabled": true, "description": "Filter by businessKey (contains)"}
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Search Workflows",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows"],
+                  "query": [
+                    {"key": "businessKey", "value": null, "disabled": true, "description": "Tìm theo businessKey (contains)"},
+                    {"key": "status", "value": null, "disabled": true, "description": "RUNNING | COMPLETED | REJECTED | CANCELLED"},
+                    {"key": "flowCode", "value": null, "disabled": true, "description": "Filter by exact flow code"}
                   ]
                 }
               },
@@ -3896,30 +3944,69 @@
               "response": []
             },
             {
-              "name": "Submit Action",
+              "name": "Submit Action (Approve)",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n  \"workflowInstanceId\": 3,\r\n  \"stepInstanceId\": 8,\r\n  \"actionType\": \"REJECT\",\r\n  \"comment\": \"Looks good, approved.\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
+                  "raw": "{\r\n  \"workflowInstanceId\": 1,\r\n  \"stepInstanceId\": 2,\r\n  \"actionType\": \"APPROVE\",\r\n  \"comment\": \"Looks good, approved.\",\r\n  \"transferToUserId\": null\r\n}",
+                  "options": {"raw": {"language": "json"}}
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/workflows/action",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "workflows",
-                    "action"
-                  ]
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "action"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Submit Action (Reject)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"workflowInstanceId\": 1,\r\n  \"stepInstanceId\": 2,\r\n  \"actionType\": \"REJECT\",\r\n  \"comment\": \"Cần chỉnh sửa lại.\",\r\n  \"transferToUserId\": null\r\n}",
+                  "options": {"raw": {"language": "json"}}
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/action",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "action"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Submit Action (Transfer)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"workflowInstanceId\": 1,\r\n  \"stepInstanceId\": 2,\r\n  \"actionType\": \"TRANSFER\",\r\n  \"comment\": \"Chuyển cho người phụ trách.\",\r\n  \"transferToUserId\": \"user_b\"\r\n}",
+                  "options": {"raw": {"language": "json"}}
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/action",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "action"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Cancel Workflow",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/{{workflowInstanceId}}/cancel?comment=Huỷ do thay đổi yêu cầu",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "{{workflowInstanceId}}", "cancel"],
+                  "query": [{"key": "comment", "value": "Huỷ do thay đổi yêu cầu"}]
                 }
               },
               "response": []
@@ -3942,7 +4029,25 @@
                   ]
                 }
               },
-              "response": []
+              "response": [
+                {
+                  "name": "success (with sub-flow step)",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/workflows/{{workflowInstanceId}}",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["api", "v1", "workflows", "{{workflowInstanceId}}"]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{"key": "Content-Type", "value": "application/json"}],
+                  "body": "{\r\n  \"id\": 1,\r\n  \"flowCode\": \"PURCHASE_APPROVAL\",\r\n  \"flowName\": \"Purchase Approval\",\r\n  \"flowVersion\": 1,\r\n  \"businessKey\": \"PO-2026-001\",\r\n  \"status\": \"RUNNING\",\r\n  \"createdBy\": \"user1\",\r\n  \"createdAt\": \"2026-04-09T08:00:00\",\r\n  \"parentStepInstanceId\": null,\r\n  \"steps\": [\r\n    {\r\n      \"id\": 1,\r\n      \"stepName\": \"Khởi tạo\",\r\n      \"stepOrder\": 0,\r\n      \"status\": \"COMPLETED\",\r\n      \"startTime\": \"2026-04-09T08:00:00\",\r\n      \"endTime\": \"2026-04-09T08:00:00\",\r\n      \"dueTime\": null,\r\n      \"assignees\": [],\r\n      \"allowedActions\": {},\r\n      \"subWorkflowInstanceId\": null\r\n    },\r\n    {\r\n      \"id\": 2,\r\n      \"stepName\": \"Sub-flow: Document Review\",\r\n      \"stepOrder\": 1,\r\n      \"status\": \"WAITING_SUB_FLOW\",\r\n      \"startTime\": \"2026-04-09T08:00:01\",\r\n      \"endTime\": null,\r\n      \"dueTime\": null,\r\n      \"assignees\": [],\r\n      \"allowedActions\": {},\r\n      \"subWorkflowInstanceId\": 5\r\n    }\r\n  ]\r\n}"
+                }
+              ]
             },
             {
               "name": "Get Workflow Timeline",
@@ -3961,6 +4066,81 @@
                     "{{workflowInstanceId}}",
                     "timeline"
                   ]
+                }
+              },
+              "response": [
+                {
+                  "name": "success (with sub-flow step)",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/workflows/{{workflowInstanceId}}/timeline",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["api", "v1", "workflows", "{{workflowInstanceId}}", "timeline"]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{"key": "Content-Type", "value": "application/json"}],
+                  "body": "{\r\n  \"id\": 1,\r\n  \"flowCode\": \"PURCHASE_APPROVAL\",\r\n  \"flowName\": \"Purchase Approval\",\r\n  \"flowVersion\": 1,\r\n  \"businessKey\": \"PO-2026-001\",\r\n  \"status\": \"RUNNING\",\r\n  \"createdBy\": \"user1\",\r\n  \"createdAt\": \"2026-04-09T08:00:00\",\r\n  \"parentStepInstanceId\": null,\r\n  \"steps\": [\r\n    {\r\n      \"stepOrder\": 0,\r\n      \"stepName\": \"Khởi tạo\",\r\n      \"stepType\": \"START\",\r\n      \"completionCondition\": \"ALL\",\r\n      \"status\": \"COMPLETED\",\r\n      \"startTime\": \"2026-04-09T08:00:00\",\r\n      \"endTime\": \"2026-04-09T08:00:00\",\r\n      \"dueTime\": null,\r\n      \"subFlowCode\": null,\r\n      \"subWorkflowInstanceId\": null,\r\n      \"subWorkflow\": null,\r\n      \"assignees\": [],\r\n      \"actionLogs\": [\r\n        {\"actionType\": \"START\", \"performedBy\": \"user1\", \"comment\": \"Workflow started\", \"createdAt\": \"2026-04-09T08:00:00\"}\r\n      ]\r\n    },\r\n    {\r\n      \"stepOrder\": 1,\r\n      \"stepName\": \"Sub-flow: Document Review\",\r\n      \"stepType\": \"SUB_FLOW\",\r\n      \"completionCondition\": \"ALL\",\r\n      \"status\": \"WAITING_SUB_FLOW\",\r\n      \"startTime\": \"2026-04-09T08:00:01\",\r\n      \"endTime\": null,\r\n      \"dueTime\": null,\r\n      \"subFlowCode\": \"DOCUMENT_REVIEW\",\r\n      \"subWorkflowInstanceId\": 5,\r\n      \"subWorkflow\": {\r\n        \"id\": 5,\r\n        \"flowCode\": \"DOCUMENT_REVIEW\",\r\n        \"flowName\": \"Document Review\",\r\n        \"flowVersion\": 1,\r\n        \"businessKey\": \"PO-2026-001\",\r\n        \"status\": \"RUNNING\",\r\n        \"createdBy\": \"SYSTEM\",\r\n        \"createdAt\": \"2026-04-09T08:00:01\",\r\n        \"parentStepInstanceId\": 2,\r\n        \"steps\": [\r\n          {\r\n            \"stepOrder\": 0,\r\n            \"stepName\": \"Khởi tạo\",\r\n            \"stepType\": \"START\",\r\n            \"completionCondition\": \"ALL\",\r\n            \"status\": \"COMPLETED\",\r\n            \"subFlowCode\": null,\r\n            \"subWorkflowInstanceId\": null,\r\n            \"subWorkflow\": null,\r\n            \"assignees\": [],\r\n            \"actionLogs\": []\r\n          },\r\n          {\r\n            \"stepOrder\": 1,\r\n            \"stepName\": \"Reviewer\",\r\n            \"stepType\": \"PARALLEL\",\r\n            \"completionCondition\": \"ANY\",\r\n            \"status\": \"IN_PROGRESS\",\r\n            \"subFlowCode\": null,\r\n            \"subWorkflowInstanceId\": null,\r\n            \"subWorkflow\": null,\r\n            \"assignees\": [\r\n              {\"userId\": \"reviewer1\", \"status\": \"PENDING\", \"actionTime\": null}\r\n            ],\r\n            \"actionLogs\": []\r\n          }\r\n        ]\r\n      },\r\n      \"assignees\": [],\r\n      \"actionLogs\": []\r\n    },\r\n    {\r\n      \"stepOrder\": 2,\r\n      \"stepName\": \"Manager Approval\",\r\n      \"stepType\": \"SEQUENTIAL\",\r\n      \"completionCondition\": \"ALL\",\r\n      \"status\": null,\r\n      \"subFlowCode\": null,\r\n      \"subWorkflowInstanceId\": null,\r\n      \"subWorkflow\": null,\r\n      \"assignees\": [],\r\n      \"actionLogs\": []\r\n    }\r\n  ]\r\n}"
+                }
+              ]
+            },
+            {
+              "name": "Get Sub-Workflow Timeline",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/{{subWorkflowInstanceId}}/timeline",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "{{subWorkflowInstanceId}}", "timeline"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Delegation",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"delegateeId\": \"user_b\",\r\n  \"startAt\": \"2026-04-09T00:00:00\",\r\n  \"endAt\": \"2026-04-30T23:59:59\"\r\n}",
+                  "options": {"raw": {"language": "json"}}
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/delegations",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "delegations"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Cancel Delegation",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/delegations/{{delegationId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "delegations", "{{delegationId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Delegations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/workflows/delegations/my",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "workflows", "delegations", "my"]
                 }
               },
               "response": []

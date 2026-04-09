@@ -1,161 +1,238 @@
 import { useEffect } from 'react'
-import { Button, Modal, NumberInput, Select, Stack, TextInput } from '@mantine/core'
+import { Button, Divider, Modal, NumberInput, Select, Stack, Switch, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { notifications } from '@mantine/notifications'
+import { notifyError } from '@/lib/notify'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminFlowsApi } from '@/api/workflow.api'
-import { notifyError } from '@/lib/notify'
-import type { CreateStepPayload, FlowStep } from '@/types/workflow'
+import type { FlowStep } from '@/types/workflow'
 
 const STEP_TYPE_OPTIONS = [
-  { value: 'START',       label: 'START – bước khởi đầu (auto)' },
-  { value: 'SEQUENTIAL',  label: 'SEQUENTIAL – tuần tự' },
-  { value: 'PARALLEL',    label: 'PARALLEL – song song' },
-  { value: 'SUB_FLOW',    label: 'SUB_FLOW – gọi flow con' },
-  { value: 'FINISH',      label: 'FINISH – bước kết thúc (auto)' },
+  { value: 'START', label: 'Start' },
+  { value: 'SEQUENTIAL', label: 'Sequential' },
+  { value: 'PARALLEL', label: 'Parallel' },
+  { value: 'SUB_FLOW', label: 'Sub-flow' },
+  { value: 'FINISH', label: 'Finish' },
 ]
 
 const COMPLETION_OPTIONS = [
-  { value: 'ALL',     label: 'ALL – tất cả phê duyệt' },
-  { value: 'ANY',     label: 'ANY – một người phê duyệt' },
-  { value: 'PERCENT', label: 'PERCENT – theo tỉ lệ %' },
+  { value: 'ALL', label: 'All' },
+  { value: 'ANY', label: 'Any' },
+  { value: 'PERCENT', label: 'Percent' },
 ]
 
 const SLA_ACTION_OPTIONS = [
-  { value: 'AUTO_APPROVE', label: 'Auto Approve' },
-  { value: 'AUTO_REJECT',  label: 'Auto Reject' },
-  { value: 'ESCALATE',     label: 'Escalate' },
+  { value: 'AUTO_APPROVE', label: 'Auto approve' },
+  { value: 'AUTO_REJECT', label: 'Auto reject' },
+  { value: 'ESCALATE', label: 'Escalate' },
 ]
 
 interface Props {
-  flowId: number
-  step?: FlowStep | null
-  nextOrder: number
+  opened: boolean
   onClose: () => void
+  flowId: number
+  step?: FlowStep
 }
 
-export function StepModal({ flowId, step, nextOrder, onClose }: Props) {
+type FormValues = {
+  name: string
+  stepOrder: number | string
+  type: string
+  completionCondition: string
+  completionThreshold: number | string
+  slaDuration: number | string
+  slaAction: string
+  subFlowCode: string
+  maxRetries: number | string
+  allowPickup: boolean
+}
+
+export function StepModal({ opened, onClose, flowId, step }: Props) {
   const queryClient = useQueryClient()
   const isEdit = !!step
 
-  const form = useForm<CreateStepPayload>({
+  const form = useForm<FormValues>({
     initialValues: {
-      name: '',
-      stepOrder: nextOrder,
-      type: 'SEQUENTIAL',
-      completionCondition: 'ALL',
-      completionThreshold: null,
-      slaDuration: 86400,
-      slaAction: 'AUTO_REJECT',
-      subFlowCode: null,
+      name: step?.name ?? '',
+      stepOrder: step?.stepOrder ?? 0,
+      type: step?.type ?? 'SEQUENTIAL',
+      completionCondition: step?.completionCondition ?? 'ALL',
+      completionThreshold: step?.completionThreshold ?? '',
+      slaDuration: step?.slaDuration ?? '',
+      slaAction: step?.slaAction ?? '',
+      subFlowCode: step?.subFlowCode ?? '',
+      maxRetries: step?.maxRetries ?? '',
+      allowPickup: step?.allowPickup ?? false,
     },
     validate: {
-      name: (v) => (!v.trim() ? 'Bắt buộc' : null),
-      stepOrder: (v) => (v < 0 ? 'Phải >= 0' : null),
+      name: (v) => (!v ? 'Required' : null),
+      stepOrder: (v) => (v === '' || v === undefined ? 'Required' : null),
+      type: (v) => (!v ? 'Required' : null),
+      completionCondition: (v) => (!v ? 'Required' : null),
       completionThreshold: (v, values) =>
-        values.completionCondition === 'PERCENT' && !v ? 'Bắt buộc khi chọn PERCENT' : null,
+        values.completionCondition === 'PERCENT' && (!v || Number(v) < 1 || Number(v) > 100)
+          ? 'Must be 1–100 when using PERCENT'
+          : null,
       subFlowCode: (v, values) =>
-        values.type === 'SUB_FLOW' && !v?.trim() ? 'Bắt buộc khi type = SUB_FLOW' : null,
+        values.type === 'SUB_FLOW' && !v ? 'Required when type = SUB_FLOW' : null,
     },
   })
+
+  const buildPayload = (v: FormValues) => ({
+    name: v.name,
+    stepOrder: Number(v.stepOrder),
+    type: v.type as never,
+    completionCondition: v.completionCondition as never,
+    completionThreshold: v.completionCondition === 'PERCENT' ? Number(v.completionThreshold) : null,
+    slaDuration: v.slaDuration !== '' ? Number(v.slaDuration) : null,
+    slaAction: v.slaAction || null,
+    subFlowCode: v.type === 'SUB_FLOW' ? v.subFlowCode || null : null,
+    maxRetries: v.maxRetries !== '' ? Number(v.maxRetries) : null,
+    allowPickup: v.allowPickup,
+  })
+
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['admin-flows', flowId] })
+
+  const addMutation = useMutation({
+    mutationFn: (payload: ReturnType<typeof buildPayload>) =>
+      adminFlowsApi.addStep(flowId, payload as never),
+    onSuccess: () => {
+      invalidate()
+      notifications.show({ message: 'Step added', color: 'green' })
+      handleClose()
+    },
+    onError: (error) => notifyError(error),
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: (payload: ReturnType<typeof buildPayload>) =>
+      adminFlowsApi.updateStep(step!.id, payload as never),
+    onSuccess: () => {
+      invalidate()
+      notifications.show({ message: 'Step updated', color: 'green' })
+      handleClose()
+    },
+    onError: (error) => notifyError(error),
+  })
+
+  const isPending = addMutation.isPending || updateMutation.isPending
 
   useEffect(() => {
-    if (step) {
+    if (opened) {
       form.setValues({
-        name: step.name,
-        stepOrder: step.stepOrder,
-        type: step.type,
-        completionCondition: step.completionCondition,
-        completionThreshold: step.completionThreshold,
-        slaDuration: step.slaDuration,
-        slaAction: step.slaAction,
-        subFlowCode: step.subFlowCode,
+        name: step?.name ?? '',
+        stepOrder: step?.stepOrder ?? 0,
+        type: step?.type ?? 'SEQUENTIAL',
+        completionCondition: step?.completionCondition ?? 'ALL',
+        completionThreshold: step?.completionThreshold ?? '',
+        slaDuration: step?.slaDuration ?? '',
+        slaAction: step?.slaAction ?? '',
+        subFlowCode: step?.subFlowCode ?? '',
+        maxRetries: step?.maxRetries ?? '',
+        allowPickup: step?.allowPickup ?? false,
       })
-    } else {
-      form.reset()
-      form.setFieldValue('stepOrder', nextOrder)
     }
-  }, [step, nextOrder])
+  }, [opened])
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: (payload: CreateStepPayload) =>
-      isEdit
-        ? adminFlowsApi.updateStep(step!.id, payload)
-        : adminFlowsApi.addStep(flowId, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-flow-detail', flowId] })
-      onClose()
-    },
-    onError: (error) => notifyError(error, isEdit ? 'Cập nhật Step thất bại' : 'Thêm Step thất bại'),
-  })
+  function handleClose() {
+    form.reset()
+    onClose()
+  }
 
-  const isSubFlow = form.values.type === 'SUB_FLOW'
-  const showSlaFields = form.values.type !== 'START' && form.values.type !== 'FINISH' && !isSubFlow
+  function handleSubmit(v: FormValues) {
+    const payload = buildPayload(v)
+    if (isEdit) updateMutation.mutate(payload)
+    else addMutation.mutate(payload)
+  }
+
+  const showThreshold = form.values.completionCondition === 'PERCENT'
+  const showSubFlow = form.values.type === 'SUB_FLOW'
+  const showSla = form.values.slaDuration !== '' && form.values.slaDuration !== null
 
   return (
     <Modal
-      opened
-      onClose={onClose}
-      title={isEdit ? 'Chỉnh sửa Step' : 'Thêm Step mới'}
-      radius="md"
+      opened={opened}
+      onClose={handleClose}
+      title={isEdit ? 'Edit Step' : 'New Step'}
+      centered
       size="md"
     >
-      <form onSubmit={form.onSubmit((v) => mutate(v))}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="sm">
-          <TextInput label="Tên Step" placeholder="VD: Manager Approval" radius="md" {...form.getInputProps('name')} />
+          <TextInput label="Step name" placeholder="e.g. Document review" {...form.getInputProps('name')} />
 
-          <NumberInput label="Thứ tự (Order)" min={0} radius="md" {...form.getInputProps('stepOrder')} />
+          <NumberInput
+            label="Order"
+            placeholder="0"
+            min={0}
+            {...form.getInputProps('stepOrder')}
+          />
 
-          <Select label="Kiểu Step" data={STEP_TYPE_OPTIONS} radius="md" {...form.getInputProps('type')} />
+          <Select
+            label="Step type"
+            data={STEP_TYPE_OPTIONS}
+            {...form.getInputProps('type')}
+          />
 
-          {isSubFlow && (
+          {showSubFlow && (
             <TextInput
-              label="Sub-flow Code"
-              description="Code của flow con sẽ được gọi khi bước này được kích hoạt"
-              placeholder="VD: APPROVAL_SUB"
-              radius="md"
+              label="Sub-flow code"
+              placeholder="e.g. CREDIT_CHECK"
               {...form.getInputProps('subFlowCode')}
             />
           )}
 
-          {showSlaFields && (
-            <>
-              <Select
-                label="Điều kiện hoàn thành"
-                data={COMPLETION_OPTIONS}
-                radius="md"
-                {...form.getInputProps('completionCondition')}
-              />
+          <Select
+            label="Completion condition"
+            data={COMPLETION_OPTIONS}
+            {...form.getInputProps('completionCondition')}
+          />
 
-              {form.values.completionCondition === 'PERCENT' && (
-                <NumberInput
-                  label="Ngưỡng % (1–100)"
-                  min={1}
-                  max={100}
-                  radius="md"
-                  {...form.getInputProps('completionThreshold')}
-                />
-              )}
-
-              <NumberInput
-                label="SLA Duration (giây)"
-                description="86400 = 1 ngày · để trống = không có SLA"
-                min={1}
-                radius="md"
-                {...form.getInputProps('slaDuration')}
-              />
-
-              <Select
-                label="Hành động khi quá SLA"
-                data={SLA_ACTION_OPTIONS}
-                radius="md"
-                clearable
-                {...form.getInputProps('slaAction')}
-              />
-            </>
+          {showThreshold && (
+            <NumberInput
+              label="Completion threshold (%)"
+              placeholder="1–100"
+              min={1}
+              max={100}
+              {...form.getInputProps('completionThreshold')}
+            />
           )}
 
-          <Button type="submit" loading={isPending} radius="md" color="vibOrange" mt="xs">
-            {isEdit ? 'Lưu thay đổi' : 'Thêm Step'}
+          <Divider label="SLA (optional)" labelPosition="left" />
+
+          <NumberInput
+            label="SLA duration (seconds)"
+            placeholder="e.g. 86400 = 1 day"
+            min={1}
+            {...form.getInputProps('slaDuration')}
+          />
+
+          {showSla && (
+            <Select
+              label="SLA breach action"
+              data={SLA_ACTION_OPTIONS}
+              clearable
+              {...form.getInputProps('slaAction')}
+            />
+          )}
+
+          <Divider label="Advanced" labelPosition="left" />
+
+          <NumberInput
+            label="Max retries"
+            description="Leave empty = unlimited; 0 = no retry allowed"
+            min={0}
+            {...form.getInputProps('maxRetries')}
+          />
+
+          <Switch
+            label="Allow pickup"
+            description="Allow users to self-assign and pick up this task"
+            {...form.getInputProps('allowPickup', { type: 'checkbox' })}
+          />
+
+          <Button type="submit" loading={isPending} mt="xs">
+            {isEdit ? 'Save changes' : 'Add step'}
           </Button>
         </Stack>
       </form>
