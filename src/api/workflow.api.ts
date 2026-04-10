@@ -4,6 +4,7 @@ import type {
   CreateAssigneePayload,
   CreateDelegationPayload,
   CreateFlowPayload,
+  CreateSharePayload,
   CreateStepPayload,
   CreateTransitionPayload,
   Delegation,
@@ -15,6 +16,7 @@ import type {
   UpdateStepPayload,
   UpdateTransitionPayload,
   WorkflowInstance,
+  WorkflowShare,
   WorkflowStatus,
   WorkflowTimeline,
 } from '@/types/workflow'
@@ -114,4 +116,13 @@ export const workflowApi = {
 
   getMyDelegations: () =>
     get<Delegation[]>('/api/v1/workflows/delegations/my'),
+
+  getShares: (id: number) =>
+    get<WorkflowShare[]>(`/api/v1/workflows/${id}/shares`),
+
+  shareWorkflow: (id: number, payload: CreateSharePayload) =>
+    post<WorkflowShare>(`/api/v1/workflows/${id}/shares`, payload),
+
+  revokeShare: (id: number, sharedToUserId: string) =>
+    del<void>(`/api/v1/workflows/${id}/shares/${sharedToUserId}`),
 }

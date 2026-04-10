@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth } from '@/hooks/use-auth'
 import {
   ActionIcon,
   Badge,
@@ -9,14 +10,16 @@ import {
   Text,
   Tooltip,
 } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { IconRefresh, IconX } from '@tabler/icons-react'
+import { IconRefresh, IconShare, IconX } from '@tabler/icons-react'
 import { workflowApi } from '@/api/workflow.api'
 import { notifyError } from '@/lib/notify'
 import type { ActionType, StepInstance, StepTimeline, WorkflowStatus } from '@/types/workflow'
 import { ActionModal } from './components/ActionModal'
+import { ShareModal } from './components/ShareModal'
 import styles from './workflow-runner.module.scss'
 
 const WORKFLOW_STATUS_COLOR: Record<WorkflowStatus, string> = {
@@ -48,19 +51,21 @@ const ACTION_COLOR: Partial<Record<ActionType, string>> = {
 
 function formatDateTime(value: string | null | undefined) {
   if (!value) return '—'
-  return new Date(value).toLocaleString('vi-VN')
+  return new Date(value).toLocaleString('en-US')
 }
 
 function StepCard({
   step,
   stepInstance,
   workflowInstanceId,
+  currentUsername,
   onActionSuccess,
 }: {
   step: StepTimeline
   /** Step instance tương ứng từ getInstance — chứa id + allowedActions */
   stepInstance: StepInstance | undefined
   workflowInstanceId: number
+  currentUsername: string | undefined
   onActionSuccess: () => void
 }) {
   const [pendingAction, setPendingAction] = useState<{
@@ -70,8 +75,19 @@ function StepCard({
   } | null>(null)
 
   const isActive = step.status === 'IN_PROGRESS'
+  const isAssignee = !!currentUsername && step.assignees?.some((a) => a.userId === currentUsername)
   const allowedActions = stepInstance?.allowedActions ?? []
-  const hasActions = isActive && allowedActions.length > 0
+  const hasActions = isActive && isAssignee && allowedActions.length > 0
+  const canPickup = isActive && !!stepInstance?.allowPickup
+
+  const pickupMutation = useMutation({
+    mutationFn: () => workflowApi.pickup(workflowInstanceId, stepInstance!.id),
+    onSuccess: () => {
+      notifications.show({ message: 'Task picked up', color: 'teal' })
+      onActionSuccess()
+    },
+    onError: (error) => notifyError(error),
+  })
 
   return (
     <div className={`${styles.stepCard} ${isActive ? styles.activeStep : ''}`}>
@@ -93,15 +109,15 @@ function StepCard({
 
           {step.startTime && (
             <Text size="xs" c="dimmed">
-              Bắt đầu: {formatDateTime(step.startTime)}
-              {step.endTime && ` — Kết thúc: ${formatDateTime(step.endTime)}`}
-              {step.dueTime && ` | Hạn: ${formatDateTime(step.dueTime)}`}
+              Started: {formatDateTime(step.startTime)}
+              {step.endTime && ` — Ended: ${formatDateTime(step.endTime)}`}
+              {step.dueTime && ` | Due: ${formatDateTime(step.dueTime)}`}
             </Text>
           )}
 
           {step.assignees?.length > 0 && (
             <Text size="xs" c="dimmed" mt={2}>
-              Người xử lý: {step.assignees.map((a) => a.displayName ?? a.userId).join(', ')}
+              Assignees: {step.assignees.map((a) => a.displayName ?? a.userId).join(', ')}
             </Text>
           )}
 
@@ -109,7 +125,7 @@ function StepCard({
             <Stack gap={2} mt={4}>
               {step.actionLogs.map((log, i) => (
                 <div key={i} className={styles.actionLog}>
-                  [{log.actionType}] {log.performedBy} — {log.comment ?? '(không có ghi chú)'}{' '}
+                  [{log.actionType}] {log.performedBy} — {log.comment ?? '(no comment)'}{' '}
                   <span style={{ color: 'var(--mantine-color-dimmed)' }}>
                     {formatDateTime(log.createdAt)}
                   </span>
@@ -127,9 +143,9 @@ function StepCard({
         </div>
       </Group>
 
-      {hasActions && stepInstance && (
+      {(hasActions || canPickup) && stepInstance && (
         <Group gap="xs" mt="xs">
-          {allowedActions.map((a) => (
+          {hasActions && allowedActions.map((a) => (
             <Button
               key={a.actionType}
               size="xs"
@@ -146,6 +162,17 @@ function StepCard({
               {a.name}
             </Button>
           ))}
+          {canPickup && (
+            <Button
+              size="xs"
+              color="cyan"
+              variant="light"
+              loading={pickupMutation.isPending}
+              onClick={() => pickupMutation.mutate()}
+            >
+              Pick up
+            </Button>
+          )}
         </Group>
       )}
 
@@ -178,6 +205,8 @@ export function InstanceDetailPanel({
   onDataChanged?: () => void
 }) {
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+  const [shareOpened, { open: openShare, close: closeShare }] = useDisclosure(false)
 
   const { data: timeline, isLoading: loadingTimeline, refetch: refetchTimeline } = useQuery({
     queryKey: ['workflow-timeline', instanceId],
@@ -201,7 +230,7 @@ export function InstanceDetailPanel({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workflow-timeline', instanceId] })
       queryClient.invalidateQueries({ queryKey: ['workflow-instance', instanceId] })
-      notifications.show({ message: 'Workflow đã bị hủy', color: 'orange' })
+      notifications.show({ message: 'Workflow cancelled', color: 'orange' })
       onCancelled()
       onDataChanged?.()
     },
@@ -240,18 +269,23 @@ export function InstanceDetailPanel({
           </Group>
           <Text size="sm">{timeline.flowName}</Text>
           <Text size="xs" c="dimmed">
-            Business Key: <strong>{timeline.businessKey}</strong> | v{timeline.flowVersion} | Tạo
-            bởi {timeline.createdBy} lúc {formatDateTime(timeline.createdAt)}
+            Business Key: <strong>{timeline.businessKey}</strong> | v{timeline.flowVersion} | Created
+            by {timeline.createdBy} at {formatDateTime(timeline.createdAt)}
           </Text>
         </div>
         <Group gap={4}>
-          <Tooltip label="Làm mới" withArrow>
+          <Tooltip label="Refresh" withArrow>
             <ActionIcon size="sm" variant="subtle" onClick={refetchAll}>
               <IconRefresh size={14} />
             </ActionIcon>
           </Tooltip>
+          <Tooltip label="Share access" withArrow>
+            <ActionIcon size="sm" variant="subtle" color="cyan" onClick={openShare}>
+              <IconShare size={14} />
+            </ActionIcon>
+          </Tooltip>
           {canCancel && (
-            <Tooltip label="Hủy workflow" withArrow>
+            <Tooltip label="Cancel workflow" withArrow>
               <ActionIcon
                 size="sm"
                 variant="subtle"
@@ -259,9 +293,9 @@ export function InstanceDetailPanel({
                 loading={cancelMutation.isPending}
                 onClick={() =>
                   modals.openConfirmModal({
-                    title: 'Hủy workflow',
-                    children: `Hủy workflow "${timeline.businessKey}"? Hành động này không thể hoàn tác.`,
-                    labels: { confirm: 'Hủy workflow', cancel: 'Quay lại' },
+                    title: 'Cancel workflow',
+                    children: `Cancel workflow "${timeline.businessKey}"? This action cannot be undone.`,
+                    labels: { confirm: 'Cancel workflow', cancel: 'Back' },
                     confirmProps: { color: 'red' },
                     onConfirm: () => cancelMutation.mutate(),
                   })
@@ -282,10 +316,17 @@ export function InstanceDetailPanel({
             step={step}
             stepInstance={stepInstanceByOrder.get(step.stepOrder)}
             workflowInstanceId={instanceId}
+            currentUsername={user?.username}
             onActionSuccess={refetchAll}
           />
         ))}
       </Stack>
+
+      <ShareModal
+        opened={shareOpened}
+        onClose={closeShare}
+        workflowInstanceId={instanceId}
+      />
     </div>
   )
 }

@@ -24,7 +24,7 @@ import styles from '../workflow-runner.module.scss'
 
 function formatDateTime(value: string | null | undefined) {
   if (!value) return '—'
-  return new Date(value).toLocaleString('vi-VN')
+  return new Date(value).toLocaleString('en-US')
 }
 
 // ── Create delegation modal ─────────────────────────────────────
@@ -49,7 +49,7 @@ function CreateDelegationModal({
         endAt: endAt ? endAt.toISOString() : null,
       }),
     onSuccess: () => {
-      notifications.show({ message: 'Tạo ủy quyền thành công', color: 'green' })
+      notifications.show({ message: 'Delegation created', color: 'green' })
       queryClient.invalidateQueries({ queryKey: ['my-delegations'] })
       handleClose()
     },
@@ -64,25 +64,25 @@ function CreateDelegationModal({
   }
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Tạo ủy quyền mới" size="sm">
+    <Modal opened={opened} onClose={handleClose} title="Create New Delegation" size="sm">
       <Stack gap="sm">
         <TextInput
-          label="Ủy quyền cho (User ID)"
-          placeholder="Nhập userId người nhận ủy quyền"
+          label="Delegate to (User ID)"
+          placeholder="Enter delegatee user ID"
           value={delegateeId}
           onChange={(e) => setDelegateeId(e.target.value)}
           required
         />
         <DateTimePicker
-          label="Bắt đầu hiệu lực"
-          placeholder="Chọn thời điểm bắt đầu"
+          label="Effective from"
+          placeholder="Select start time"
           value={startAt}
           onChange={setStartAt}
           required
         />
         <DateTimePicker
-          label="Kết thúc (để trống = vô thời hạn)"
-          placeholder="Chọn thời điểm kết thúc"
+          label="Effective until (leave blank for indefinite)"
+          placeholder="Select end time"
           value={endAt}
           onChange={setEndAt}
           clearable
@@ -90,14 +90,14 @@ function CreateDelegationModal({
         />
         <Group justify="flex-end" mt="xs">
           <Button variant="default" onClick={handleClose}>
-            Hủy
+            Cancel
           </Button>
           <Button
             onClick={() => createMutation.mutate()}
             loading={createMutation.isPending}
             disabled={!delegateeId.trim() || !startAt}
           >
-            Tạo
+            Create
           </Button>
         </Group>
       </Stack>
@@ -113,7 +113,7 @@ function DelegationRow({ delegation }: { delegation: Delegation }) {
   const cancelMutation = useMutation({
     mutationFn: () => workflowApi.cancelDelegation(delegation.id),
     onSuccess: () => {
-      notifications.show({ message: 'Đã hủy ủy quyền', color: 'orange' })
+      notifications.show({ message: 'Delegation cancelled', color: 'orange' })
       queryClient.invalidateQueries({ queryKey: ['my-delegations'] })
     },
     onError: (error) => notifyError(error),
@@ -128,18 +128,18 @@ function DelegationRow({ delegation }: { delegation: Delegation }) {
               → {delegation.delegateeId}
             </Text>
             <Badge size="xs" color={delegation.active ? 'green' : 'gray'} variant="light">
-              {delegation.active ? 'Đang hiệu lực' : 'Đã hủy'}
+              {delegation.active ? 'Active' : 'Cancelled'}
             </Badge>
           </Group>
           <Text size="xs" c="dimmed">
-            Từ: {formatDateTime(delegation.startAt)}
+            From: {formatDateTime(delegation.startAt)}
           </Text>
           <Text size="xs" c="dimmed">
-            Đến: {delegation.endAt ? formatDateTime(delegation.endAt) : 'Vô thời hạn'}
+            Until: {delegation.endAt ? formatDateTime(delegation.endAt) : 'Indefinite'}
           </Text>
         </div>
         {delegation.active && (
-          <Tooltip label="Hủy ủy quyền" withArrow>
+          <Tooltip label="Cancel delegation" withArrow>
             <ActionIcon
               size="xs"
               variant="subtle"
@@ -147,9 +147,9 @@ function DelegationRow({ delegation }: { delegation: Delegation }) {
               loading={cancelMutation.isPending}
               onClick={() =>
                 modals.openConfirmModal({
-                  title: 'Hủy ủy quyền',
-                  children: `Hủy ủy quyền cho "${delegation.delegateeId}"?`,
-                  labels: { confirm: 'Hủy ủy quyền', cancel: 'Quay lại' },
+                  title: 'Cancel delegation',
+                  children: `Cancel delegation for "${delegation.delegateeId}"?`,
+                  labels: { confirm: 'Cancel delegation', cancel: 'Back' },
                   confirmProps: { color: 'red' },
                   onConfirm: () => cancelMutation.mutate(),
                 })
@@ -181,11 +181,11 @@ export function DelegationPanel() {
     <div className={styles.detailCard}>
       <Group justify="space-between" align="center">
         <div>
-          <Text fw={700} size="md">Quản lý ủy quyền</Text>
-          <Text size="xs" c="dimmed">Ủy quyền task của bạn cho người khác trong thời gian vắng mặt</Text>
+          <Text fw={700} size="md">Delegation Management</Text>
+          <Text size="xs" c="dimmed">Delegate your tasks to someone else while you are away</Text>
         </div>
         <Button size="xs" leftSection={<IconPlus size={13} />} onClick={openCreate}>
-          Tạo ủy quyền
+          New Delegation
         </Button>
       </Group>
 
@@ -197,14 +197,14 @@ export function DelegationPanel() {
 
       {!isLoading && delegations.length === 0 && (
         <Text size="sm" c="dimmed" ta="center" py="xl">
-          Chưa có ủy quyền nào.
+          No delegations yet.
         </Text>
       )}
 
       {active.length > 0 && (
         <Stack gap={0}>
           <Text size="xs" fw={600} c="green" px="xs" py={4}>
-            Đang hiệu lực ({active.length})
+            Active ({active.length})
           </Text>
           <div style={{ border: '1px solid var(--mantine-color-gray-2)', borderRadius: 6, overflow: 'hidden' }}>
             {active.map((d) => (
@@ -217,7 +217,7 @@ export function DelegationPanel() {
       {inactive.length > 0 && (
         <Stack gap={0}>
           <Text size="xs" fw={600} c="dimmed" px="xs" py={4}>
-            Đã hủy ({inactive.length})
+            Cancelled ({inactive.length})
           </Text>
           <div style={{ border: '1px solid var(--mantine-color-gray-2)', borderRadius: 6, overflow: 'hidden', opacity: 0.6 }}>
             {inactive.map((d) => (

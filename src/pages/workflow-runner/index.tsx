@@ -10,7 +10,7 @@ import {
   TextInput,
   Title,
 } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+import { useDebouncedValue, useDisclosure } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
@@ -38,7 +38,7 @@ const WORKFLOW_STATUS_COLOR: Record<WorkflowStatus, string> = {
 }
 
 const STATUS_OPTIONS = [
-  { value: '', label: 'Tất cả' },
+  { value: '', label: 'All' },
   { value: 'PENDING', label: 'Pending' },
   { value: 'IN_PROGRESS', label: 'In Progress' },
   { value: 'COMPLETED', label: 'Completed' },
@@ -48,7 +48,7 @@ const STATUS_OPTIONS = [
 
 function formatDateTime(value: string | null | undefined) {
   if (!value) return '—'
-  return new Date(value).toLocaleString('vi-VN')
+  return new Date(value).toLocaleString('en-US')
 }
 
 // ── Instance list item ──────────────────────────────────────────
@@ -117,7 +117,7 @@ function MyTaskItem({
         </Text>
         {task.dueTime && (
           <Text size="xs" c="orange">
-            Hạn: {formatDateTime(task.dueTime)}
+            Due: {formatDateTime(task.dueTime)}
           </Text>
         )}
       </div>
@@ -141,7 +141,7 @@ function PickupTaskItem({
   const pickupMutation = useMutation({
     mutationFn: () => workflowApi.pickup(task.workflowInstanceId, task.stepInstanceId),
     onSuccess: () => {
-      notifications.show({ message: `Đã nhận task: ${task.stepName}`, color: 'green' })
+      notifications.show({ message: `Task picked up: ${task.stepName}`, color: 'green' })
       onPickedUp()
     },
     onError: (error) => notifyError(error),
@@ -165,7 +165,7 @@ function PickupTaskItem({
           </Text>
           {task.dueTime && (
             <Text size="xs" c="orange">
-              Hạn: {formatDateTime(task.dueTime)}
+              Due: {formatDateTime(task.dueTime)}
             </Text>
           )}
         </div>
@@ -180,7 +180,7 @@ function PickupTaskItem({
             pickupMutation.mutate()
           }}
         >
-          Nhận
+          Pick up
         </Button>
       </Group>
     </div>
@@ -200,10 +200,13 @@ export function WorkflowRunnerPage() {
   const [flowCodeFilter, setFlowCodeFilter] = useState('')
   const [businessKeyFilter, setBusinessKeyFilter] = useState('')
 
+  const [debouncedFlowCode] = useDebouncedValue(flowCodeFilter, 400)
+  const [debouncedBusinessKey] = useDebouncedValue(businessKeyFilter, 400)
+
   const searchParams = {
     status: statusFilter ? (statusFilter as WorkflowStatus) : undefined,
-    flowCode: flowCodeFilter.trim() || undefined,
-    businessKey: businessKeyFilter.trim() || undefined,
+    flowCode: debouncedFlowCode.trim() || undefined,
+    businessKey: debouncedBusinessKey.trim() || undefined,
   }
 
   const { data: instances = [], isLoading: loadingInstances, refetch: refetchInstances } = useQuery({
@@ -235,7 +238,7 @@ export function WorkflowRunnerPage() {
     refetchInstances()
   }
 
-  // Khi đổi sang tab delegation thì bỏ chọn instance
+  // Clear selected instance when switching to delegation tab
   function handleTabChange(tab: string | null) {
     setActiveTab(tab ?? 'instances')
     if (tab === 'delegation') setSelectedInstanceId(null)
@@ -248,7 +251,7 @@ export function WorkflowRunnerPage() {
       <Group justify="space-between" align="center" className={styles.pageHeader}>
         <Title order={3}>Workflow Runner</Title>
         <Button leftSection={<IconPlayerPlay size={14} />} onClick={openStart}>
-          Khởi tạo mới
+          New Instance
         </Button>
       </Group>
 
@@ -281,7 +284,7 @@ export function WorkflowRunnerPage() {
                 )}
               </Tabs.Tab>
               <Tabs.Tab value="delegation" leftSection={<IconUserShare size={13} />}>
-                Ủy quyền
+                Delegation
               </Tabs.Tab>
             </Tabs.List>
 
@@ -294,7 +297,7 @@ export function WorkflowRunnerPage() {
                 <Stack gap={4}>
                   <Select
                     size="xs"
-                    placeholder="Trạng thái"
+                    placeholder="Status"
                     data={STATUS_OPTIONS}
                     value={statusFilter}
                     onChange={(v) => setStatusFilter(v ?? '')}
@@ -319,14 +322,14 @@ export function WorkflowRunnerPage() {
                     onClick={() => refetchInstances()}
                     loading={loadingInstances}
                   >
-                    Tải lại
+                    Refresh
                   </Button>
                 </Stack>
               </div>
               <div className={styles.instanceList}>
                 {!loadingInstances && instances.length === 0 && (
                   <Text size="xs" c="dimmed" ta="center" py="md">
-                    Không có instance nào.
+                    No instances found.
                   </Text>
                 )}
                 {instances.map((inst) => (
@@ -354,13 +357,13 @@ export function WorkflowRunnerPage() {
                   onClick={() => refetchTasks()}
                   loading={loadingTasks}
                 >
-                  Tải lại
+                  Refresh
                 </Button>
               </div>
               <div className={styles.instanceList}>
                 {!loadingTasks && myTasks.length === 0 && (
                   <Text size="xs" c="dimmed" ta="center" py="md">
-                    Không có task nào.
+                    No tasks.
                   </Text>
                 )}
                 {myTasks.map((task) => (
@@ -388,13 +391,13 @@ export function WorkflowRunnerPage() {
                   onClick={() => refetchPickup()}
                   loading={loadingPickup}
                 >
-                  Tải lại
+                  Refresh
                 </Button>
               </div>
               <div className={styles.instanceList}>
                 {!loadingPickup && pickupTasks.length === 0 && (
                   <Text size="xs" c="dimmed" ta="center" py="md">
-                    Không có task nào có thể nhận.
+                    No pickup tasks available.
                   </Text>
                 )}
                 {pickupTasks.map((task) => (
@@ -409,10 +412,10 @@ export function WorkflowRunnerPage() {
               </div>
             </Tabs.Panel>
 
-            {/* Delegation tab — chỉ giữ chỗ, nội dung hiển thị bên right panel */}
+            {/* Delegation tab — content displayed in right panel */}
             <Tabs.Panel value="delegation" style={{ flex: 1 }}>
               <Text size="xs" c="dimmed" ta="center" py="md" px="sm">
-                Xem và quản lý ủy quyền ở panel bên phải.
+                View and manage delegations in the right panel.
               </Text>
             </Tabs.Panel>
           </Tabs>
@@ -435,7 +438,7 @@ export function WorkflowRunnerPage() {
             <div className={styles.emptyState}>
               <IconTimeline size={36} color="var(--mantine-color-gray-4)" />
               <Text c="dimmed" size="sm">
-                Chọn một workflow instance để xem timeline
+                Select a workflow instance to view its timeline
               </Text>
             </div>
           )}

@@ -41,13 +41,13 @@ export function StartWorkflowModal({ opened, onClose, onStarted }: Props) {
         try {
           contextData = JSON.parse(contextDataRaw)
         } catch {
-          throw new Error('Context data phải là JSON hợp lệ')
+          throw new Error('Context data must be valid JSON')
         }
       }
       return workflowApi.start({ flowCode: flowCode!, businessKey, contextData })
     },
     onSuccess: (instance) => {
-      notifications.show({ message: 'Khởi tạo workflow thành công', color: 'green' })
+      notifications.show({ message: 'Workflow started successfully', color: 'green' })
       handleClose()
       onStarted(instance)
     },
@@ -62,11 +62,11 @@ export function StartWorkflowModal({ opened, onClose, onStarted }: Props) {
   }
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Khởi tạo Workflow mới" size="md">
+    <Modal opened={opened} onClose={handleClose} title="Start New Workflow" size="md">
       <Stack gap="sm">
         <Select
           label="Flow"
-          placeholder="Chọn flow (chỉ ACTIVE)"
+          placeholder="Select flow (ACTIVE only)"
           data={flowOptions}
           value={flowCode}
           onChange={setFlowCode}
@@ -75,13 +75,13 @@ export function StartWorkflowModal({ opened, onClose, onStarted }: Props) {
         />
         <TextInput
           label="Business Key"
-          placeholder="VD: ORDER-001, REQ-2024-01"
+          placeholder="e.g. ORDER-001, REQ-2024-01"
           value={businessKey}
           onChange={(e) => setBusinessKey(e.target.value)}
           required
         />
         <Textarea
-          label="Context Data (JSON, tuỳ chọn)"
+          label="Context Data (JSON, optional)"
           placeholder='{"amount": 5000, "department": "IT"}'
           value={contextDataRaw}
           onChange={(e) => setContextDataRaw(e.target.value)}
@@ -93,14 +93,14 @@ export function StartWorkflowModal({ opened, onClose, onStarted }: Props) {
         />
         <Group justify="flex-end" mt="xs">
           <Button variant="default" onClick={handleClose}>
-            Hủy
+            Cancel
           </Button>
           <Button
             onClick={() => startMutation.mutate()}
             loading={startMutation.isPending}
             disabled={!flowCode || !businessKey.trim()}
           >
-            Khởi tạo
+            Start
           </Button>
         </Group>
       </Stack>

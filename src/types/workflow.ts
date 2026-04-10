@@ -6,9 +6,9 @@ export type CompletionCondition = 'ALL' | 'ANY' | 'PERCENT'
 
 export type SlaAction = 'AUTO_APPROVE' | 'AUTO_REJECT' | 'ESCALATE'
 
-export type AssigneeType = 'ROLE' | 'USER' | 'DEPT_OWNER'
+export type AssigneeType = 'ROLE' | 'USER' | 'DEPT_OWNER' | 'WORKFLOW_CREATOR'
 
-export type ActionType = 'START' | 'APPROVE' | 'REJECT' | 'REWORK' | 'TRANSFER' | 'EDIT' | 'SHARE' | 'FINISH' | 'CANCEL'
+export type ActionType = 'START' | 'APPROVE' | 'REJECT' | 'REWORK' | 'EDIT_REQUEST' | 'TRANSFER' | 'FINISH' | 'CANCEL' | 'RECALL'
 
 export interface AssigneeTemplate {
   id: number
@@ -142,6 +142,7 @@ export interface StepInstance {
   dueTime: string | null
   assignees: AssigneeInfo[]
   allowedActions: ActionTemplateItem[]
+  allowPickup: boolean
   subWorkflowInstanceId: number | null
   subWorkflow: SubWorkflowSummary | null
 }
@@ -235,4 +236,17 @@ export interface CreateDelegationPayload {
   delegateeId: string
   startAt: string
   endAt?: string | null
+}
+
+export interface WorkflowShare {
+  id: number
+  workflowInstanceId: number
+  sharedToUserId: string
+  sharedBy: string
+  createdAt: string
+  revokedAt: string | null
+}
+
+export interface CreateSharePayload {
+  sharedToUserId: string
 }

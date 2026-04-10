@@ -38,7 +38,7 @@ export function ActionModal({
         transferToUserId: actionType === 'TRANSFER' ? transferToUserId.trim() : undefined,
       }),
     onSuccess: () => {
-      notifications.show({ message: `Đã thực hiện: ${actionLabel}`, color: 'green' })
+      notifications.show({ message: `Action submitted: ${actionLabel}`, color: 'green' })
       handleClose()
       onSuccess()
     },
@@ -52,20 +52,20 @@ export function ActionModal({
   }
 
   return (
-    <Modal opened={opened} onClose={handleClose} title={`Xác nhận: ${actionLabel}`} size="sm">
+    <Modal opened={opened} onClose={handleClose} title={`Confirm: ${actionLabel}`} size="sm">
       <Stack gap="sm">
         {actionType === 'TRANSFER' && (
           <TextInput
-            label="Chuyển cho User ID"
-            placeholder="Nhập userId người nhận"
+            label="Transfer to User ID"
+            placeholder="Enter recipient user ID"
             value={transferToUserId}
             onChange={(e) => setTransferToUserId(e.target.value)}
             required
           />
         )}
         <Textarea
-          label="Ghi chú (tuỳ chọn)"
-          placeholder="Nhập ghi chú..."
+          label="Comment (optional)"
+          placeholder="Enter a comment..."
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           rows={3}
@@ -75,14 +75,14 @@ export function ActionModal({
         />
         <Group justify="flex-end" mt="xs">
           <Button variant="default" onClick={handleClose}>
-            Hủy
+            Cancel
           </Button>
           <Button
             onClick={() => submitMutation.mutate()}
             loading={submitMutation.isPending}
             disabled={actionType === 'TRANSFER' && !transferToUserId.trim()}
           >
-            Xác nhận
+            Confirm
           </Button>
         </Group>
       </Stack>
