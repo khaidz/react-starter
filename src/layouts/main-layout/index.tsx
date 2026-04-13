@@ -28,6 +28,7 @@ import {
 } from '@tabler/icons-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { authApi } from '@/api/auth.api'
+import { NotificationBell } from '@/components/notification-bell'
 import vibLogo from '@/assets/images/VIB_Logo_Symbol.svg'
 import { useAuth } from '@/hooks/use-auth'
 import { usePermission } from '@/hooks/use-permission'
@@ -86,6 +87,12 @@ const NAV_ITEMS: NavItem[] = [
     icon: IconKey,
     roles: [Roles.ADMIN],
   },
+  {
+    to: '/notifications/admin',
+    label: 'Notifications',
+    icon: IconBell,
+    roles: [Roles.ADMIN],
+  },
 ]
 
 export function MainLayout() {
@@ -128,11 +135,7 @@ export function MainLayout() {
 
           {/* Right actions */}
           <div className={styles.headerRight}>
-            <Tooltip label="Notifications">
-              <ActionIcon variant="subtle" color="gray" size="lg" radius="xl">
-                <IconBell size={20} />
-              </ActionIcon>
-            </Tooltip>
+            <NotificationBell />
 
             <Tooltip label="Settings">
               <ActionIcon variant="subtle" color="gray" size="lg" radius="xl">

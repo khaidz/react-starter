@@ -1,0 +1,53 @@
+.header {
+  background: #fafafa;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--mantine-color-gray-1);
+  transition: background 0.1s;
+  width: 100%;
+  text-align: left;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--mantine-color-gray-0);
+
+    .rowActions {
+      opacity: 1;
+    }
+  }
+
+  &.read {
+    background: #fff;
+
+    &:hover {
+      background: var(--mantine-color-gray-0);
+    }
+  }
+
+  &.unread {
+    background: #eff6ff;
+
+    &:hover {
+      background: #dbeafe;
+    }
+  }
+}
+
+.rowContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowActions {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
