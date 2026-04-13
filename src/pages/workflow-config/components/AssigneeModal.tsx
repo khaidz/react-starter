@@ -8,11 +8,12 @@ import { adminFlowsApi } from '@/api/workflow.api'
 import type { AssigneeTemplate } from '@/types/workflow'
 
 const ASSIGNEE_TYPE_OPTIONS = [
-  { value: 'ROLE', label: 'Role' },
-  { value: 'USER', label: 'User' },
-  { value: 'DEPT_OWNER', label: 'Department owner' },
+  { value: 'ROLE',             label: 'Role' },
+  { value: 'USER',             label: 'User' },
+  { value: 'DEPT_OWNER',       label: 'Department owner' },
   { value: 'WORKFLOW_CREATOR', label: 'Workflow creator' },
-  { value: 'CONTEXT', label: 'Context variable' },
+  { value: 'CONTEXT',          label: 'Context variable' },
+  { value: 'LOOKUP',           label: 'Lookup provider' },
 ]
 
 interface Props {
@@ -84,11 +85,16 @@ export function AssigneeModal({ opened, onClose, stepId, flowId, assignee }: Pro
     onClose()
   }
 
-  const assigneeValueLabel = {
-    ROLE: 'Role name',
-    USER: 'Username',
-    DEPT_OWNER: 'Manager role name (optional)',
-  }[form.values.assigneeType]
+  const assigneeValueLabel: Record<string, string> = {
+    ROLE:             'Role name',
+    USER:             'Username',
+    DEPT_OWNER:       'Manager role name (optional)',
+    CONTEXT:          'Context key',
+    LOOKUP:           'Lookup provider key',
+  }
+  const valueLabel = assigneeValueLabel[form.values.assigneeType]
+
+  const noValueNeeded = form.values.assigneeType === 'WORKFLOW_CREATOR'
 
   return (
     <Modal opened={opened} onClose={handleClose} title={isEdit ? 'Edit Assignee' : 'Add Assignee'} centered>
@@ -99,11 +105,19 @@ export function AssigneeModal({ opened, onClose, stepId, flowId, assignee }: Pro
             data={ASSIGNEE_TYPE_OPTIONS}
             {...form.getInputProps('assigneeType')}
           />
-          <TextInput
-            label={assigneeValueLabel}
-            placeholder="e.g. MANAGER or john.doe"
-            {...form.getInputProps('assigneeValue')}
-          />
+          {!noValueNeeded && (
+            <TextInput
+              label={valueLabel ?? 'Value'}
+              placeholder={
+                form.values.assigneeType === 'LOOKUP'
+                  ? 'e.g. province-approver'
+                  : form.values.assigneeType === 'CONTEXT'
+                  ? 'e.g. managerUsername'
+                  : 'e.g. MANAGER or john.doe'
+              }
+              {...form.getInputProps('assigneeValue')}
+            />
+          )}
           <Button type="submit" loading={isPending}>
             {isEdit ? 'Save changes' : 'Add'}
           </Button>
