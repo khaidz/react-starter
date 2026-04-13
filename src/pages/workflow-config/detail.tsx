@@ -628,7 +628,7 @@ export function FlowDetailPanel({
             )}
             <Button
               size="sm"
-              color="orange.8"
+              color="cyan"
               leftSection={<IconDownload size={15} />}
               loading={exporting}
               onClick={async () => {

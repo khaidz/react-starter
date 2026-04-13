@@ -286,7 +286,7 @@ export function WorkflowConfigPage() {
                 <Button
                   style={{ flex: 1 }}
                   variant="light"
-                  color="orange.8"
+                  color="cyan"
                   leftSection={<IconUpload size={13} />}
                   loading={importing}
                   onClick={() => document.getElementById('import-flow-input')?.click()}
