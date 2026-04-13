@@ -44,54 +44,35 @@ interface NavItem {
   permissions?: string[]
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { to: '/', label: 'Dashboard', icon: IconLayoutDashboard, end: true },
+interface NavSection {
+  label: string
+  items: NavItem[]
+}
+
+const NAV_SECTIONS: NavSection[] = [
   {
-    to: '/workflow-config',
-    label: 'Workflow Config',
-    icon: IconGitFork,
-    roles: [Roles.ADMIN],
+    label: 'Main',
+    items: [
+      { to: '/', label: 'Dashboard', icon: IconLayoutDashboard, end: true },
+    ],
   },
   {
-    to: '/workflow-runner',
-    label: 'Workflow Runner',
-    icon: IconPlayerPlay,
+    label: 'Workflow',
+    items: [
+      { to: '/workflow-config', label: 'Workflow Config', icon: IconGitFork, roles: [Roles.ADMIN] },
+      { to: '/workflow-runner', label: 'Workflow Runner', icon: IconPlayerPlay },
+    ],
   },
   {
-    to: '/permissions',
-    label: 'Permissions',
-    icon: IconShieldCheck,
-    roles: [Roles.ADMIN],
-  },
-  {
-    to: '/roles',
-    label: 'Roles',
-    icon: IconShieldLock,
-    roles: [Roles.ADMIN],
-  },
-  {
-    to: '/departments',
-    label: 'Departments',
-    icon: IconBuildingSkyscraper,
-    roles: [Roles.ADMIN],
-  },
-  {
-    to: '/users',
-    label: 'Users',
-    icon: IconUsers,
-    roles: [Roles.ADMIN],
-  },
-  {
-    to: '/api-keys',
-    label: 'API Keys',
-    icon: IconKey,
-    roles: [Roles.ADMIN],
-  },
-  {
-    to: '/notifications/admin',
-    label: 'Notifications',
-    icon: IconBell,
-    roles: [Roles.ADMIN],
+    label: 'System',
+    items: [
+      { to: '/permissions', label: 'Permissions', icon: IconShieldCheck, roles: [Roles.ADMIN] },
+      { to: '/roles', label: 'Roles', icon: IconShieldLock, roles: [Roles.ADMIN] },
+      { to: '/departments', label: 'Departments', icon: IconBuildingSkyscraper, roles: [Roles.ADMIN] },
+      { to: '/users', label: 'Users', icon: IconUsers, roles: [Roles.ADMIN] },
+      { to: '/api-keys', label: 'API Keys', icon: IconKey, roles: [Roles.ADMIN] },
+      { to: '/notifications/admin', label: 'Notifications', icon: IconBell, roles: [Roles.ADMIN] },
+    ],
   },
 ]
 
@@ -102,7 +83,10 @@ export function MainLayout() {
   const { can } = usePermission()
   const queryClient = useQueryClient()
 
-  const visibleNavItems = NAV_ITEMS.filter(({ roles, permissions }) => can(roles, permissions))
+  const visibleSections = NAV_SECTIONS.map((section) => ({
+    ...section,
+    items: section.items.filter(({ roles, permissions }) => can(roles, permissions)),
+  })).filter((section) => section.items.length > 0)
 
   const { mutate: logout } = useMutation({
     mutationFn: authApi.logout,
@@ -205,18 +189,22 @@ export function MainLayout() {
           </div>
 
           <nav className={styles.navBody}>
-            <div className={styles.navLabel}>Navigation</div>
-            {visibleNavItems.map(({ to, label, icon: Icon, end }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                onClick={close}
-                className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
-              >
-                <Icon size={18} />
-                {label}
-              </NavLink>
+            {visibleSections.map((section) => (
+              <div key={section.label} className={styles.navSection}>
+                <div className={styles.navLabel}>{section.label}</div>
+                {section.items.map(({ to, label, icon: Icon, end }) => (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    end={end}
+                    onClick={close}
+                    className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                  >
+                    <Icon size={18} />
+                    {label}
+                  </NavLink>
+                ))}
+              </div>
             ))}
           </nav>
         </div>

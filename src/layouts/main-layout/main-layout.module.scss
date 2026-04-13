@@ -35,6 +35,14 @@ $sidebar-width: 200px;
   &::-webkit-scrollbar { width: 0; }
 }
 
+.navSection {
+  & + & {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
 .navLabel {
   font-size: 10px;
   font-weight: 600;
@@ -42,7 +50,7 @@ $sidebar-width: 200px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 0 0.6rem;
-  margin: 0.5rem 0 0.3rem;
+  margin: 0 0 0.3rem;
 }
 
 .navLink {
