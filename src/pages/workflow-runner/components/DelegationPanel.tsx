@@ -38,15 +38,15 @@ function CreateDelegationModal({
 }) {
   const queryClient = useQueryClient()
   const [delegateeId, setDelegateeId] = useState('')
-  const [startAt, setStartAt] = useState<Date | null>(new Date())
-  const [endAt, setEndAt] = useState<Date | null>(null)
+  const [startAt, setStartAt] = useState<string | null>(new Date().toISOString())
+  const [endAt, setEndAt] = useState<string | null>(null)
 
   const createMutation = useMutation({
     mutationFn: () =>
       workflowApi.createDelegation({
         delegateeId: delegateeId.trim(),
-        startAt: startAt!.toISOString(),
-        endAt: endAt ? endAt.toISOString() : null,
+        startAt: startAt!,
+        endAt: endAt ?? null,
       }),
     onSuccess: () => {
       notifications.show({ message: 'Delegation created', color: 'green' })
@@ -58,7 +58,7 @@ function CreateDelegationModal({
 
   function handleClose() {
     setDelegateeId('')
-    setStartAt(new Date())
+    setStartAt(new Date().toISOString())
     setEndAt(null)
     onClose()
   }
@@ -86,7 +86,7 @@ function CreateDelegationModal({
           value={endAt}
           onChange={setEndAt}
           clearable
-          minDate={startAt ?? undefined}
+          minDate={startAt ? new Date(startAt) : undefined}
         />
         <Group justify="flex-end" mt="xs">
           <Button variant="default" onClick={handleClose}>

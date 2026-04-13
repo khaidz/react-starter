@@ -45,6 +45,7 @@ export interface FlowStep {
   slaAction: SlaAction | null
   /** Code của sub-flow. Chỉ có giá trị khi type = SUB_FLOW. */
   subFlowCode: string | null
+  maxRetries: number | null
   allowPickup: boolean
   assignees: AssigneeTemplate[]
   transitions: Transition[]

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Anchor, ActionIcon, Badge, Divider, Group, Loader, Stack, Text, Tooltip } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
 import { IconDownload, IconEye, IconPaperclip } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
 import { workflowApi } from '@/api/workflow.api'
@@ -72,6 +71,10 @@ export function AttachmentRow({ a }: { a: WorkflowAttachment }) {
       </Tooltip>
     </Group>
   )
+}
+
+interface Props {
+  workflowInstanceId: number
 }
 
 export function AttachmentsPanel({ workflowInstanceId }: Props) {

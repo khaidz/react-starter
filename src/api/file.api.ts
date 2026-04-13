@@ -1,4 +1,4 @@
-import { del, get, http } from '@/lib/http'
+import { del, http } from '@/lib/http'
 import type { ApiResponse } from '@/types/api'
 
 export interface FileStorageDto {
@@ -53,7 +53,7 @@ export const fileApi = {
     const url = URL.createObjectURL(res.data as Blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = name
+    a.download = name ?? fileKey
     document.body.appendChild(a)
     a.click()
     a.remove()
