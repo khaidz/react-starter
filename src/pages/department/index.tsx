@@ -298,6 +298,11 @@ function TreeNodeRow({
           <Text size="xs" ff="monospace" c="dimmed" w={90}>
             <HighlightText text={node.code} keyword={keyword} />
           </Text>
+          {node.ownerUsername && (
+            <Text size="xs" c="dimmed" style={{ flexShrink: 0 }}>
+              @<HighlightText text={node.ownerUsername} keyword={keyword} />
+            </Text>
+          )}
           <Badge
             size="xs"
             variant="light"
@@ -589,6 +594,13 @@ export function DepartmentPage() {
       header: 'Description',
       cell: (row) => (
         <Text c={row.description ? undefined : 'dimmed'}>{row.description || '—'}</Text>
+      ),
+    },
+    {
+      id: 'ownerUsername',
+      header: 'Owner',
+      cell: (row) => (
+        <Text c={row.ownerUsername ? undefined : 'dimmed'}>{row.ownerUsername || '—'}</Text>
       ),
     },
     {

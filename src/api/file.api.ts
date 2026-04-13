@@ -1,5 +1,8 @@
-import { del, http } from '@/lib/http'
-import type { ApiResponse } from '@/types/api'
+import { del, get, http } from '@/lib/http'
+import type { ApiResponse, PagedData } from '@/types/api'
+
+export type FileCategory = 'IMAGE' | 'DOCUMENT' | 'VIDEO' | 'AUDIO' | 'OTHER'
+export type FileStatus   = 'ACTIVE' | 'DELETED'
 
 export interface FileStorageDto {
   fileKey: string
@@ -7,7 +10,17 @@ export interface FileStorageDto {
   contentType: string
   fileSize: number
   sizeReadable: string
+  category: FileCategory
   createdAt: string
+}
+
+export interface FileSearchParams {
+  referenceType?: string
+  referenceId?: number
+  category?: FileCategory
+  status?: FileStatus
+  page?: number
+  size?: number
 }
 
 export const fileApi = {
@@ -62,6 +75,14 @@ export const fileApi = {
 
   previewUrl: (fileKey: string) =>
     `${import.meta.env.VITE_API_BASE_URL ?? ''}/api/v1/files/${fileKey}/preview`,
+
+  previewBlob: async (fileKey: string): Promise<string> => {
+    const res = await http.get(`/api/v1/files/${fileKey}/preview`, { responseType: 'blob' })
+    return URL.createObjectURL(res.data as Blob)
+  },
+
+  search: (params?: FileSearchParams) =>
+    get<PagedData<FileStorageDto>>('/api/v1/files', { params }),
 
   delete: (fileKey: string) =>
     del<void>(`/api/v1/files/${fileKey}`),

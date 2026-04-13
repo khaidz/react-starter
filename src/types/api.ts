@@ -79,6 +79,7 @@ export interface DepartmentItem {
   path?: string
   depth?: number
   active: boolean
+  ownerUsername?: string | null
   parent?: { id: number; name: string; code: string; active: boolean } | null
 }
 
@@ -101,6 +102,7 @@ export interface DepartmentTreeNode {
   name: string
   depth: number
   isActive: boolean
+  ownerUsername?: string | null
   children: DepartmentTreeNode[]
 }
 

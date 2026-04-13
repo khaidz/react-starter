@@ -22,6 +22,7 @@ import { notifications } from '@mantine/notifications'
 import { notifyError } from '@/lib/notify'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
+  IconDownload,
   IconGitBranch,
   IconPencil,
   IconPlayerPause,
@@ -498,6 +499,7 @@ export function FlowDetailPanel({
 
   const [addStepOpen, { open: openAddStep, close: closeAddStep }] = useDisclosure(false)
   const [activeTab, setActiveTab] = useState('config')
+  const [exporting, setExporting] = useState(false)
 
   const { data: flow, isLoading } = useQuery({
     queryKey: ['admin-flows', id],
@@ -624,6 +626,24 @@ export function FlowDetailPanel({
                 Deactivate
               </Button>
             )}
+            <Button
+              size="sm"
+              color="orange.8"
+              leftSection={<IconDownload size={15} />}
+              loading={exporting}
+              onClick={async () => {
+                setExporting(true)
+                try {
+                  await adminFlowsApi.exportFlow(flow.id)
+                } catch (err) {
+                  notifyError(err)
+                } finally {
+                  setExporting(false)
+                }
+              }}
+            >
+              Export
+            </Button>
             <Button
               size="sm"
               leftSection={<IconGitBranch size={15} />}

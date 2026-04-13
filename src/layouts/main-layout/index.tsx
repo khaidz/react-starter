@@ -31,7 +31,7 @@ import { authApi } from '@/api/auth.api'
 import vibLogo from '@/assets/images/VIB_Logo_Symbol.svg'
 import { useAuth } from '@/hooks/use-auth'
 import { usePermission } from '@/hooks/use-permission'
-import { Permissions, Roles } from '@/lib/permissions'
+import { Roles } from '@/lib/permissions'
 import styles from './main-layout.module.scss'
 
 interface NavItem {
@@ -85,13 +85,6 @@ const NAV_ITEMS: NavItem[] = [
     label: 'API Keys',
     icon: IconKey,
     roles: [Roles.ADMIN],
-  },
-  {
-    to: '/settings',
-    label: 'Settings',
-    icon: IconSettings,
-    roles: [Roles.ADMIN],
-    permissions: [Permissions.SETTINGS_VIEW],
   },
 ]
 

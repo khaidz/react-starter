@@ -5,8 +5,10 @@ export interface UserSearchParams {
   username?: string
   email?: string
   status?: UserStatus
+  deptId?: number
   page?: number
   size?: number
+  sort?: string[]
 }
 
 export interface CreateUserPayload {

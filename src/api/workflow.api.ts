@@ -1,4 +1,4 @@
-import { del, get, post, put } from '@/lib/http'
+import { del, get, http, post, put } from '@/lib/http'
 import type {
   CreateActionPayload,
   CreateAssigneePayload,
@@ -44,6 +44,33 @@ export const adminFlowsApi = {
 
   newVersion: (flowId: number) =>
     post<FlowSummary>(`/api/v1/admin/flows/${flowId}/new-version`),
+
+  exportFlow: async (flowId: number, includeIds = false): Promise<void> => {
+    const res = await http.get(`/api/v1/admin/flows/${flowId}/export`, {
+      params: { includeIds },
+      responseType: 'blob',
+    })
+    const disposition: string = res.headers['content-disposition'] ?? ''
+    const match = disposition.match(/filename="?([^";\n]+)"?/i)
+    const filename = match ? match[1].trim() : `flow-${flowId}.json`
+    const url = URL.createObjectURL(res.data as Blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  },
+
+  importFlow: async (file: File): Promise<FlowSummary> => {
+    const form = new FormData()
+    form.append('file', file)
+    const res = await http.post<{ data: FlowSummary }>('/api/v1/admin/flows/import', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return res.data.data
+  },
 
   // Steps — trả về FlowDetailResponse (full detail sau khi thay đổi)
   addStep: (flowId: number, payload: CreateStepPayload) =>

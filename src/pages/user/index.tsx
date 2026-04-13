@@ -1,6 +1,6 @@
 import { usersApi, type CreateUserPayload, type UpdateUserPayload } from '@/api/users.api'
-import { rolesApi } from '@/api/roles.api'
 import { departmentsApi } from '@/api/departments.api'
+import { rolesApi } from '@/api/roles.api'
 import { DataTable, type TableColumn } from '@/components/data-table'
 import type { SortingState } from '@tanstack/react-table'
 import { notifyError } from '@/lib/notify'
@@ -96,7 +96,7 @@ function UserModal({ opened, onClose, editItem }: UserModalProps) {
     },
     validate: {
       username: (v) => (!v?.trim() ? 'Username is required' : null),
-      password: (v, values) =>
+      password: (v, _values) =>
         !isEdit && !v?.trim() ? 'Password is required' : null,
       email: (v) => {
         if (!v?.trim()) return 'Email is required'
@@ -279,24 +279,37 @@ export function UserPage() {
   const [usernameInput, setUsernameInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const [status, setStatus] = useState<UserStatus | ''>('')
+  const [deptId, setDeptId] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [sorting, setSorting] = useState<SortingState>([])
 
   const [username] = useDebouncedValue(usernameInput, 300)
   const [email] = useDebouncedValue(emailInput, 300)
 
+  const { data: allDepts = [] } = useQuery({
+    queryKey: ['departments'],
+    queryFn: () => departmentsApi.search(),
+    staleTime: 60_000,
+  })
+
+  const deptOptions = allDepts.map((d) => ({
+    value: String(d.id),
+    label: d.path ? `${d.path} / ${d.name}` : d.name,
+  }))
+
   // Reset về trang 1 khi filter hoặc sort thay đổi
-  useEffect(() => { setPage(1) }, [username, email, status, sorting])
+  useEffect(() => { setPage(1) }, [username, email, status, deptId, sorting])
 
   const sort = sorting.map((s) => `${s.id},${s.desc ? 'desc' : 'asc'}`)
 
   const { data, isLoading, isFetching, refetch } = useQuery({
-    queryKey: ['users', { username, email, status, page, sort }],
+    queryKey: ['users', { username, email, status, deptId, page, sort }],
     queryFn: () =>
       usersApi.search({
         username: username || undefined,
         email: email || undefined,
         status: (status as UserStatus) || undefined,
+        deptId: deptId ? Number(deptId) : undefined,
         page: page - 1,
         size: PAGE_SIZE,
         sort: sort.length ? sort : undefined,
@@ -469,6 +482,15 @@ export function UserPage() {
               onChange={(v) => setStatus((v as UserStatus) ?? '')}
               clearable
               w={130}
+            />
+            <Select
+              placeholder="All departments"
+              data={deptOptions}
+              value={deptId}
+              onChange={setDeptId}
+              searchable
+              clearable
+              w={180}
             />
           </Group>
         }

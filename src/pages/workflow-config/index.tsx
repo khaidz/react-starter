@@ -1,3 +1,4 @@
+import type React from 'react'
 import { useState } from 'react'
 import {
   ActionIcon,
@@ -20,7 +21,9 @@ import {
   IconPlayerPause,
   IconPlayerPlay,
   IconPlus,
+  IconRefresh,
   IconTrash,
+  IconUpload,
 } from '@tabler/icons-react'
 import { adminFlowsApi } from '@/api/workflow.api'
 import type { FlowStatus, FlowSummary } from '@/types/workflow'
@@ -217,8 +220,9 @@ export function WorkflowConfigPage() {
   const [selectedFlowId, setSelectedFlowId] = useState<number | null>(null)
   const [createOpened, { open: openCreate, close: closeCreate }] = useDisclosure(false)
   const [statusFilter, setStatusFilter] = useState<FlowStatus[]>(['DRAFT', 'ACTIVE', 'INACTIVE'])
+  const [importing, setImporting] = useState(false)
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['admin-flows'],
     queryFn: adminFlowsApi.list,
   })
@@ -232,6 +236,23 @@ export function WorkflowConfigPage() {
   function handleFlowCreated(id: number) {
     queryClient.invalidateQueries({ queryKey: ['admin-flows'] })
     setSelectedFlowId(id)
+  }
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setImporting(true)
+    try {
+      const flow = await adminFlowsApi.importFlow(file)
+      queryClient.invalidateQueries({ queryKey: ['admin-flows'] })
+      setSelectedFlowId(flow.id)
+      notifications.show({ message: `Imported "${flow.name}" successfully`, color: 'green' })
+    } catch (err) {
+      notifyError(err)
+    } finally {
+      setImporting(false)
+    }
   }
 
   function handleDeleted(id: number) {
@@ -252,14 +273,40 @@ export function WorkflowConfigPage() {
         {/* ── Left: flow list ── */}
         <div className={styles.leftPanel}>
           <div className={styles.leftHeader}>
-            <Button
-              fullWidth
-              leftSection={<IconPlus size={13} />}
-              variant="light"
-              onClick={openCreate}
-            >
-              New Flow
-            </Button>
+            <Group gap={6} align="center">
+              <Button
+                style={{ flex: 1 }}
+                leftSection={<IconPlus size={13} />}
+                variant="light"
+                onClick={openCreate}
+              >
+                New Flow
+              </Button>
+              <Tooltip label="Import from JSON" withArrow>
+                <Button
+                  style={{ flex: 1 }}
+                  variant="light"
+                  color="orange.8"
+                  leftSection={<IconUpload size={13} />}
+                  loading={importing}
+                  onClick={() => document.getElementById('import-flow-input')?.click()}
+                >
+                  Import
+                </Button>
+              </Tooltip>
+              <Tooltip label="Refresh" withArrow>
+                <ActionIcon variant="subtle" color="gray" loading={isLoading} onClick={() => refetch()}>
+                  <IconRefresh size={15} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+            <input
+              id="import-flow-input"
+              type="file"
+              accept=".json,application/json"
+              style={{ display: 'none' }}
+              onChange={handleImport}
+            />
             <Checkbox.Group
               mt="xs"
               value={statusFilter}

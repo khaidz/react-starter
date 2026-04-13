@@ -28,7 +28,6 @@ import {
   IconCheck,
   IconCopy,
   IconEdit,
-  IconKey,
   IconPlus,
   IconTrash,
   IconX,
