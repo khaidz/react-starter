@@ -17,8 +17,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { IconRefresh, IconShare, IconX } from '@tabler/icons-react'
 import { workflowApi } from '@/api/workflow.api'
 import { notifyError } from '@/lib/notify'
-import type { ActionType, StepInstance, StepTimeline, WorkflowStatus } from '@/types/workflow'
+import type { ActionType, StepInstance, StepTimeline, WorkflowAttachment, WorkflowStatus } from '@/types/workflow'
 import { ActionModal } from './components/ActionModal'
+import { AttachmentRow, attachmentLabel } from './components/AttachmentsPanel'
 import { ShareModal } from './components/ShareModal'
 import styles from './workflow-runner.module.scss'
 
@@ -59,13 +60,14 @@ function StepCard({
   stepInstance,
   workflowInstanceId,
   currentUsername,
+  attachments,
   onActionSuccess,
 }: {
   step: StepTimeline
-  /** Step instance tương ứng từ getInstance — chứa id + allowedActions */
   stepInstance: StepInstance | undefined
   workflowInstanceId: number
   currentUsername: string | undefined
+  attachments: WorkflowAttachment[]
   onActionSuccess: () => void
 }) {
   const [pendingAction, setPendingAction] = useState<{
@@ -139,6 +141,17 @@ function StepCard({
               Sub-flow: <strong>{step.subFlowCode}</strong>
               {step.subWorkflowInstanceId && ` (ID: ${step.subWorkflowInstanceId})`}
             </Text>
+          )}
+
+          {attachments.length > 0 && (
+            <Stack gap={3} mt={4}>
+              <Text size="xs" c="dimmed" fw={500}>
+                Attachments:
+              </Text>
+              {attachments.map((a) => (
+                <AttachmentRow key={a.id} a={a} />
+              ))}
+            </Stack>
           )}
         </div>
       </Group>
@@ -219,9 +232,15 @@ export function InstanceDetailPanel({
     queryFn: () => workflowApi.getInstance(instanceId),
   })
 
+  const { data: allAttachments = [] } = useQuery({
+    queryKey: ['workflow-attachments', instanceId],
+    queryFn: () => workflowApi.getAttachments(instanceId),
+  })
+
   function refetchAll() {
     refetchTimeline()
     refetchInstance()
+    queryClient.invalidateQueries({ queryKey: ['workflow-attachments', instanceId] })
     onDataChanged?.()
   }
 
@@ -230,6 +249,7 @@ export function InstanceDetailPanel({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workflow-timeline', instanceId] })
       queryClient.invalidateQueries({ queryKey: ['workflow-instance', instanceId] })
+      queryClient.invalidateQueries({ queryKey: ['workflow-attachments', instanceId] })
       notifications.show({ message: 'Workflow cancelled', color: 'orange' })
       onCancelled()
       onDataChanged?.()
@@ -252,6 +272,17 @@ export function InstanceDetailPanel({
     (instance?.steps ?? []).map((s) => [s.stepOrder, s]),
   )
 
+  // Nhóm attachments: null → initial (start), còn lại theo stepInstanceId
+  const initialAttachments = allAttachments.filter((a) => a.stepInstanceId == null)
+  const attachmentsByStep = new Map<number, WorkflowAttachment[]>()
+  for (const a of allAttachments) {
+    if (a.stepInstanceId != null) {
+      const list = attachmentsByStep.get(a.stepInstanceId) ?? []
+      list.push(a)
+      attachmentsByStep.set(a.stepInstanceId, list)
+    }
+  }
+
   const canCancel = timeline.status === 'PENDING' || timeline.status === 'IN_PROGRESS'
 
   return (
@@ -272,6 +303,16 @@ export function InstanceDetailPanel({
             Business Key: <strong>{timeline.businessKey}</strong> | v{timeline.flowVersion} | Created
             by {timeline.createdBy} at {formatDateTime(timeline.createdAt)}
           </Text>
+          {initialAttachments.length > 0 && (
+            <Stack gap={3} mt={4}>
+              <Text size="xs" c="dimmed" fw={500}>
+                Attachments:
+              </Text>
+              {initialAttachments.map((a) => (
+                <AttachmentRow key={a.id} a={a} />
+              ))}
+            </Stack>
+          )}
         </div>
         <Group gap={4}>
           <Tooltip label="Refresh" withArrow>
@@ -310,16 +351,20 @@ export function InstanceDetailPanel({
 
       {/* Steps */}
       <Stack gap="xs">
-        {timeline.steps.map((step, i) => (
-          <StepCard
-            key={i}
-            step={step}
-            stepInstance={stepInstanceByOrder.get(step.stepOrder)}
-            workflowInstanceId={instanceId}
-            currentUsername={user?.username}
-            onActionSuccess={refetchAll}
-          />
-        ))}
+        {timeline.steps.map((step, i) => {
+          const si = stepInstanceByOrder.get(step.stepOrder)
+          return (
+            <StepCard
+              key={i}
+              step={step}
+              stepInstance={si}
+              workflowInstanceId={instanceId}
+              currentUsername={user?.username}
+              attachments={si ? (attachmentsByStep.get(si.id) ?? []) : []}
+              onActionSuccess={refetchAll}
+            />
+          )
+        })}
       </Stack>
 
       <ShareModal

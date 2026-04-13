@@ -11,10 +11,12 @@ import type {
   Flow,
   FlowSummary,
   MyTask,
+  PageDTO,
   StartWorkflowPayload,
   SubmitActionPayload,
   UpdateStepPayload,
   UpdateTransitionPayload,
+  WorkflowAttachment,
   WorkflowInstance,
   WorkflowShare,
   WorkflowStatus,
@@ -94,14 +96,14 @@ export const workflowApi = {
   getTimeline: (id: number) =>
     get<WorkflowTimeline>(`/api/v1/workflows/${id}/timeline`),
 
-  search: (params?: { businessKey?: string; status?: WorkflowStatus; flowCode?: string }) =>
-    get<WorkflowInstance[]>('/api/v1/workflows', { params }),
+  search: (params?: { businessKey?: string; status?: WorkflowStatus; flowCode?: string; page?: number; size?: number }) =>
+    get<PageDTO<WorkflowInstance>>('/api/v1/workflows', { params }),
 
   getMyTasks: (params?: { flowCode?: string; businessKey?: string; page?: number; size?: number }) =>
-    get<{ content: MyTask[]; totalElements: number }>('/api/v1/workflows/my-tasks', { params }),
+    get<PageDTO<MyTask>>('/api/v1/workflows/my-tasks', { params }),
 
-  getPickupTasks: (flowCode?: string) =>
-    get<MyTask[]>('/api/v1/workflows/pickup-tasks', { params: { flowCode } }),
+  getPickupTasks: (params?: { flowCode?: string; businessKey?: string; page?: number; size?: number }) =>
+    get<PageDTO<MyTask>>('/api/v1/workflows/pickup-tasks', { params }),
 
   pickup: (workflowInstanceId: number, stepInstanceId: number, comment?: string) =>
     post<void>(`/api/v1/workflows/${workflowInstanceId}/steps/${stepInstanceId}/pickup`, undefined, {
@@ -114,8 +116,8 @@ export const workflowApi = {
   cancelDelegation: (id: number) =>
     del<void>(`/api/v1/workflows/delegations/${id}`),
 
-  getMyDelegations: () =>
-    get<Delegation[]>('/api/v1/workflows/delegations/my'),
+  getMyDelegations: (params?: { page?: number; size?: number }) =>
+    get<PageDTO<Delegation>>('/api/v1/workflows/delegations/my', { params }),
 
   getShares: (id: number) =>
     get<WorkflowShare[]>(`/api/v1/workflows/${id}/shares`),
@@ -125,4 +127,10 @@ export const workflowApi = {
 
   revokeShare: (id: number, sharedToUserId: string) =>
     del<void>(`/api/v1/workflows/${id}/shares/${sharedToUserId}`),
+
+  getAttachments: (id: number) =>
+    get<WorkflowAttachment[]>(`/api/v1/workflows/${id}/attachments`),
+
+  deleteAttachment: (workflowId: number, attachmentId: number) =>
+    del<void>(`/api/v1/workflows/${workflowId}/attachments/${attachmentId}`),
 }

@@ -114,6 +114,14 @@ export interface UpdateTransitionPayload extends CreateTransitionPayload {}
 
 // ── Workflow Runner types ────────────────────────────────────────
 
+export interface PageDTO<T> {
+  content: T[]
+  page: number
+  size: number
+  total: number
+  totalPages: number
+}
+
 export type WorkflowStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ERROR'
 
 export type StepStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'SKIPPED' | 'ERROR'
@@ -212,6 +220,7 @@ export interface StartWorkflowPayload {
   flowCode: string
   businessKey: string
   contextData?: Record<string, unknown>
+  fileKeys?: string[]
 }
 
 export interface SubmitActionPayload {
@@ -220,6 +229,7 @@ export interface SubmitActionPayload {
   actionType: ActionType
   comment?: string
   transferToUserId?: string
+  fileKeys?: string[]
 }
 
 export interface Delegation {
@@ -249,4 +259,21 @@ export interface WorkflowShare {
 
 export interface CreateSharePayload {
   sharedToUserId: string
+}
+
+export interface WorkflowAttachment {
+  id: number
+  fileKey: string
+  originalName: string | null
+  contentType: string | null
+  fileSize: number | null
+  sizeReadable: string | null
+  uploadedBy: string
+  createdAt: string
+  /** Null nếu đính kèm lúc start workflow */
+  actionLogId: number | null
+  /** Null nếu đính kèm lúc start workflow */
+  stepInstanceId: number | null
+  /** Null nếu đính kèm lúc start workflow */
+  stepName: string | null
 }

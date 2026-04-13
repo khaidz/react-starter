@@ -169,11 +169,12 @@ function DelegationRow({ delegation }: { delegation: Delegation }) {
 export function DelegationPanel() {
   const [createOpened, { open: openCreate, close: closeCreate }] = useDisclosure(false)
 
-  const { data: delegations = [], isLoading } = useQuery({
+  const { data: delegationsPage, isLoading } = useQuery({
     queryKey: ['my-delegations'],
-    queryFn: workflowApi.getMyDelegations,
+    queryFn: () => workflowApi.getMyDelegations(),
   })
 
+  const delegations = delegationsPage?.content ?? []
   const active = delegations.filter((d) => d.active)
   const inactive = delegations.filter((d) => !d.active)
 

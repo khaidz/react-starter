@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Button, Group, Modal, Select, Stack, Textarea, TextInput } from '@mantine/core'
+import { Button, Group, Modal, Select, Stack, Text, Textarea, TextInput } from '@mantine/core'
+import { FileUploader, type UploadedFile } from '@/components/file-uploader'
 import { notifications } from '@mantine/notifications'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { adminFlowsApi, workflowApi } from '@/api/workflow.api'
@@ -16,6 +17,7 @@ export function StartWorkflowModal({ opened, onClose, onStarted }: Props) {
   const [flowCode, setFlowCode] = useState<string | null>(null)
   const [businessKey, setBusinessKey] = useState('')
   const [contextDataRaw, setContextDataRaw] = useState('')
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
 
   const { data } = useQuery({
     queryKey: ['admin-flows'],
@@ -44,7 +46,12 @@ export function StartWorkflowModal({ opened, onClose, onStarted }: Props) {
           throw new Error('Context data must be valid JSON')
         }
       }
-      return workflowApi.start({ flowCode: flowCode!, businessKey, contextData })
+      return workflowApi.start({
+        flowCode: flowCode!,
+        businessKey,
+        contextData,
+        fileKeys: uploadedFiles.length > 0 ? uploadedFiles.map((f) => f.fileKey) : undefined,
+      })
     },
     onSuccess: (instance) => {
       notifications.show({ message: 'Workflow started successfully', color: 'green' })
@@ -58,6 +65,7 @@ export function StartWorkflowModal({ opened, onClose, onStarted }: Props) {
     setFlowCode(null)
     setBusinessKey('')
     setContextDataRaw('')
+    setUploadedFiles([])
     onClose()
   }
 
@@ -91,6 +99,15 @@ export function StartWorkflowModal({ opened, onClose, onStarted }: Props) {
           maxRows={6}
           styles={{ input: { fontFamily: 'monospace', fontSize: '0.8rem' } }}
         />
+        <div>
+          <Text size="sm" fw={500} mb={4}>
+            Attachments (optional)
+          </Text>
+          <FileUploader
+            onChange={setUploadedFiles}
+            referenceType="WORKFLOW"
+          />
+        </div>
         <Group justify="flex-end" mt="xs">
           <Button variant="default" onClick={handleClose}>
             Cancel

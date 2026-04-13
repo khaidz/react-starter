@@ -1,10 +1,11 @@
-import { Button, Group, Modal, Stack, Textarea, TextInput } from '@mantine/core'
+import { Button, Group, Modal, Stack, Text, Textarea, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { workflowApi } from '@/api/workflow.api'
 import { notifyError } from '@/lib/notify'
 import { notifications } from '@mantine/notifications'
 import type { ActionType } from '@/types/workflow'
+import { FileUploader, type UploadedFile } from '@/components/file-uploader'
 
 interface Props {
   workflowInstanceId: number
@@ -27,6 +28,7 @@ export function ActionModal({
 }: Props) {
   const [comment, setComment] = useState('')
   const [transferToUserId, setTransferToUserId] = useState('')
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
 
   const submitMutation = useMutation({
     mutationFn: () =>
@@ -36,6 +38,7 @@ export function ActionModal({
         actionType,
         comment: comment.trim() || undefined,
         transferToUserId: actionType === 'TRANSFER' ? transferToUserId.trim() : undefined,
+        fileKeys: uploadedFiles.length > 0 ? uploadedFiles.map((f) => f.fileKey) : undefined,
       }),
     onSuccess: () => {
       notifications.show({ message: `Action submitted: ${actionLabel}`, color: 'green' })
@@ -48,6 +51,7 @@ export function ActionModal({
   function handleClose() {
     setComment('')
     setTransferToUserId('')
+    setUploadedFiles([])
     onClose()
   }
 
@@ -73,6 +77,15 @@ export function ActionModal({
           minRows={2}
           maxRows={5}
         />
+        <div>
+          <Text size="sm" fw={500} mb={4}>
+            Attachments (optional)
+          </Text>
+          <FileUploader
+            onChange={setUploadedFiles}
+            referenceType="WORKFLOW"
+          />
+        </div>
         <Group justify="flex-end" mt="xs">
           <Button variant="default" onClick={handleClose}>
             Cancel

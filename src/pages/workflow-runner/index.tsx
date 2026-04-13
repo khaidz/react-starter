@@ -209,22 +209,24 @@ export function WorkflowRunnerPage() {
     businessKey: debouncedBusinessKey.trim() || undefined,
   }
 
-  const { data: instances = [], isLoading: loadingInstances, refetch: refetchInstances } = useQuery({
+  const { data: instancesPage, isLoading: loadingInstances, refetch: refetchInstances } = useQuery({
     queryKey: ['workflow-instances', searchParams],
     queryFn: () => workflowApi.search(searchParams),
   })
 
-  const { data: myTasksData, isLoading: loadingTasks, refetch: refetchTasks } = useQuery({
+  const { data: myTasksPage, isLoading: loadingTasks, refetch: refetchTasks } = useQuery({
     queryKey: ['workflow-my-tasks'],
     queryFn: () => workflowApi.getMyTasks(),
   })
 
-  const { data: pickupTasks = [], isLoading: loadingPickup, refetch: refetchPickup } = useQuery({
+  const { data: pickupTasksPage, isLoading: loadingPickup, refetch: refetchPickup } = useQuery({
     queryKey: ['workflow-pickup-tasks'],
     queryFn: () => workflowApi.getPickupTasks(),
   })
 
-  const myTasks: MyTask[] = myTasksData?.content ?? []
+  const instances = instancesPage?.content ?? []
+  const myTasks: MyTask[] = myTasksPage?.content ?? []
+  const pickupTasks: MyTask[] = pickupTasksPage?.content ?? []
 
   function handleStarted(instance: WorkflowInstance) {
     queryClient.invalidateQueries({ queryKey: ['workflow-instances'] })
