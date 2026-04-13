@@ -47,11 +47,19 @@ export interface UserItem {
   roles: string[]
   deptCode?: string
   deptName?: string
+  isDepartmentOwner?: boolean
 }
 
 export interface Role {
   id: number
   name: string
+}
+
+export interface RoleItem {
+  id: number
+  name: string
+  description?: string
+  permissions: PermissionItem[]
 }
 
 export interface Department {
@@ -61,4 +69,43 @@ export interface Department {
   path?: string
   depth?: number
   active: boolean
+}
+
+export interface DepartmentItem {
+  id: number
+  name: string
+  code: string
+  description?: string
+  path?: string
+  depth?: number
+  active: boolean
+  parent?: { id: number; name: string; code: string; active: boolean } | null
+}
+
+export type ApiKeyStatus = 'ACTIVE' | 'REVOKED' | 'EXPIRED'
+
+export interface ApiKeyItem {
+  id: number
+  name: string
+  description?: string
+  keyValue: string
+  status: ApiKeyStatus
+  expired: boolean
+  expiresAt?: string | null
+  createdAt: string
+}
+
+export interface DepartmentTreeNode {
+  id: number
+  code: string
+  name: string
+  depth: number
+  isActive: boolean
+  children: DepartmentTreeNode[]
+}
+
+export interface PermissionItem {
+  id: number
+  name: string
+  description?: string
 }

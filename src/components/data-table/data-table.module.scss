@@ -1,17 +1,48 @@
 .wrapper {
   background: #fff;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border-radius: 5px;
   overflow: hidden;
 }
+
+// ── Toolbar ────────────────────────────────────────────────────────────────────
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  min-height: 44px;
+  gap: 0.5rem;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// ── Scroll area ────────────────────────────────────────────────────────────────
 
 .scrollArea {
   overflow-x: auto;
 }
 
+// ── Table ──────────────────────────────────────────────────────────────────────
+
 .table {
+  table-layout: fixed;
+  width: 100%;
+
   thead tr th {
-    font-size: 0.714rem;
     font-weight: 600;
     color: #6b7280;
     text-transform: uppercase;
@@ -20,18 +51,25 @@
     border-bottom: 1px solid #e5e7eb;
     padding: 0.7rem 1rem;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   tbody tr td {
     padding: 0.5rem 1rem;
     border-bottom: 1px solid #f3f4f6;
     vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   tbody tr:last-child td {
     border-bottom: none;
   }
 }
+
+// ── Sortable header ────────────────────────────────────────────────────────────
 
 .thSortable {
   cursor: pointer;
@@ -59,10 +97,34 @@
   color: #004b8d;
 }
 
+// ── Filter row ─────────────────────────────────────────────────────────────────
+
+.filterRow th {
+  background: #f9fafb !important;
+  padding: 0.4rem 0.6rem !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.filterCell {
+  vertical-align: middle;
+}
+
+.filterInput {
+  font-size: 0.75rem !important;
+  min-height: 28px !important;
+  height: 28px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+// ── Empty / loading state ──────────────────────────────────────────────────────
+
 .stateCell {
   text-align: center !important;
   padding: 3rem 1rem !important;
 }
+
+// ── Footer ─────────────────────────────────────────────────────────────────────
 
 .footer {
   display: flex;

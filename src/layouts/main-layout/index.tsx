@@ -1,4 +1,3 @@
-  console.log("🚀 ~ IconUsers:", IconUsers)
 import type React from 'react'
 import {
   ActionIcon,
@@ -14,14 +13,18 @@ import { useDisclosure } from '@mantine/hooks'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   IconBell,
+  IconBuildingSkyscraper,
+  IconKey,
+  IconUsers,
   IconGitFork,
   IconLayoutDashboard,
   IconLogout,
   IconPlayerPlay,
   IconSearch,
   IconSettings,
+  IconShieldCheck,
+  IconShieldLock,
   IconUser,
-  IconUsers,
 } from '@tabler/icons-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { authApi } from '@/api/auth.api'
@@ -52,6 +55,36 @@ const NAV_ITEMS: NavItem[] = [
     to: '/workflow-runner',
     label: 'Workflow Runner',
     icon: IconPlayerPlay,
+  },
+  {
+    to: '/permissions',
+    label: 'Permissions',
+    icon: IconShieldCheck,
+    roles: [Roles.ADMIN],
+  },
+  {
+    to: '/roles',
+    label: 'Roles',
+    icon: IconShieldLock,
+    roles: [Roles.ADMIN],
+  },
+  {
+    to: '/departments',
+    label: 'Departments',
+    icon: IconBuildingSkyscraper,
+    roles: [Roles.ADMIN],
+  },
+  {
+    to: '/users',
+    label: 'Users',
+    icon: IconUsers,
+    roles: [Roles.ADMIN],
+  },
+  {
+    to: '/api-keys',
+    label: 'API Keys',
+    icon: IconKey,
+    roles: [Roles.ADMIN],
   },
   {
     to: '/settings',
@@ -93,7 +126,7 @@ export function MainLayout() {
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
 
           <TextInput
-            placeholder="Nhập từ khóa để tìm kiếm..."
+            placeholder="Search..."
             leftSection={<IconSearch size={15} color="#9ca3af" />}
             className={styles.headerSearch}
             radius="sm"
@@ -176,7 +209,7 @@ export function MainLayout() {
           </div>
 
           <nav className={styles.navBody}>
-            <div className={styles.navLabel}>Menu</div>
+            <div className={styles.navLabel}>Navigation</div>
             {visibleNavItems.map(({ to, label, icon: Icon, end }) => (
               <NavLink
                 key={to}

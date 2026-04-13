@@ -225,7 +225,15 @@ function StepCard({
                   color="red"
                   leftSection={<IconTrash size={13} />}
                   loading={deleteStepMutation.isPending}
-                  onClick={() => deleteStepMutation.mutate()}
+                  onClick={() =>
+                    modals.openConfirmModal({
+                      title: 'Delete step',
+                      children: `Delete step "${step.name}"? This action cannot be undone.`,
+                      labels: { confirm: 'Delete', cancel: 'Cancel' },
+                      confirmProps: { color: 'red' },
+                      onConfirm: () => deleteStepMutation.mutate(),
+                    })
+                  }
                 >
                   Delete step
                 </Button>
@@ -280,7 +288,15 @@ function StepCard({
                                       color="red"
                                       variant="subtle"
                                       loading={deleteAssigneeMutation.isPending}
-                                      onClick={() => deleteAssigneeMutation.mutate(a.id)}
+                                      onClick={() =>
+                                        modals.openConfirmModal({
+                                          title: 'Remove assignee',
+                                          children: `Remove assignee "${a.assigneeValue || a.assigneeType}"?`,
+                                          labels: { confirm: 'Remove', cancel: 'Cancel' },
+                                          confirmProps: { color: 'red' },
+                                          onConfirm: () => deleteAssigneeMutation.mutate(a.id),
+                                        })
+                                      }
                                     >
                                       <IconTrash size={13} />
                                     </ActionIcon>
@@ -324,7 +340,15 @@ function StepCard({
                                 color="white"
                                 variant="transparent"
                                 loading={deleteActionMutation.isPending}
-                                onClick={() => deleteActionMutation.mutate(a.id!)}
+                                onClick={() =>
+                                  modals.openConfirmModal({
+                                    title: 'Remove action',
+                                    children: `Remove action "${a.name} (${a.actionType})"?`,
+                                    labels: { confirm: 'Remove', cancel: 'Cancel' },
+                                    confirmProps: { color: 'red' },
+                                    onConfirm: () => deleteActionMutation.mutate(a.id!),
+                                  })
+                                }
                               >
                                 <IconX size={10} />
                               </ActionIcon>
@@ -412,7 +436,15 @@ function StepCard({
                                   variant="subtle"
                                   color="red"
                                   loading={deleteTransitionMutation.isPending}
-                                  onClick={() => deleteTransitionMutation.mutate(t.id)}
+                                  onClick={() =>
+                                    modals.openConfirmModal({
+                                      title: 'Delete transition',
+                                      children: `Delete transition "${t.fromStepName} → ${t.toStepName ?? 'END'} (${t.actionType})"?`,
+                                      labels: { confirm: 'Delete', cancel: 'Cancel' },
+                                      confirmProps: { color: 'red' },
+                                      onConfirm: () => deleteTransitionMutation.mutate(t.id),
+                                    })
+                                  }
                                 >
                                   <IconTrash size={13} />
                                 </ActionIcon>

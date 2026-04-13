@@ -51,9 +51,9 @@ export function ForbiddenPage() {
         </div>
 
         <div className={styles.code}>403</div>
-        <div className={styles.title}>Bạn không có quyền truy cập</div>
+        <div className={styles.title}>Access Denied</div>
         <div className={styles.desc}>
-          Tài khoản của bạn không có đủ quyền để xem trang này. Vui lòng liên hệ quản trị viên nếu bạn cho rằng đây là nhầm lẫn.
+          Your account does not have permission to view this page. Please contact an administrator if you believe this is a mistake.
         </div>
 
         <div className={styles.actions}>
@@ -63,7 +63,7 @@ export function ForbiddenPage() {
             radius="md"
             onClick={() => navigate(-1)}
           >
-            Quay lại
+            Go Back
           </Button>
           <Button
             component={Link}
@@ -71,7 +71,7 @@ export function ForbiddenPage() {
             leftSection={<IconHome size={16} />}
             radius="md"
           >
-            Về trang chủ
+            Home
           </Button>
         </div>
       </div>

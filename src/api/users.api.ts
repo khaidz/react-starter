@@ -1,28 +1,31 @@
 import { del, get, post, put } from '@/lib/http'
-import type { Department, PagedData, Role, UserItem } from '@/types/api'
+import type { PagedData, UserItem, UserStatus } from '@/types/api'
 
 export interface UserSearchParams {
   username?: string
   email?: string
-  status?: string
+  status?: UserStatus
   page?: number
   size?: number
-  sort?: string[]
 }
 
 export interface CreateUserPayload {
   username: string
   password: string
   email: string
-  status: 'ACTIVE' | 'PENDING' | 'LOCKED' | 'DELETED'
+  status?: UserStatus
   roleIds: number[]
-  deptId?: number
+  deptId?: number | null
+  isDepartmentOwner?: boolean
 }
 
 export interface UpdateUserPayload {
-  status?: 'ACTIVE' | 'PENDING' | 'LOCKED' | 'DELETED'
-  roleIds?: number[]
-  deptId?: number
+  username?: string
+  email?: string
+  status?: UserStatus
+  roleIds: number[]
+  deptId?: number | null
+  isDepartmentOwner?: boolean
 }
 
 export const usersApi = {
@@ -33,20 +36,11 @@ export const usersApi = {
     get<UserItem>(`/api/v1/users/${id}`),
 
   create: (payload: CreateUserPayload) =>
-    post<UserItem>('/api/v1/users', payload),
+    post<void>('/api/v1/users', payload),
 
   update: (id: number, payload: UpdateUserPayload) =>
-    put<UserItem>(`/api/v1/users/${id}`, payload),
+    put<void>(`/api/v1/users/${id}`, payload),
 
   delete: (id: number) =>
     del<void>(`/api/v1/users/${id}`),
-}
-
-export const rolesApi = {
-  search: () => get<Role[]>('/api/v1/roles/search'),
-}
-
-export const departmentsApi = {
-  search: (keyword?: string) =>
-    get<Department[]>('/api/v1/departments/search', { params: { keyword, sort: 'name' } }),
 }

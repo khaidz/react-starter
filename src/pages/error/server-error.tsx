@@ -52,9 +52,9 @@ export function ServerErrorPage({ error, onReset }: ServerErrorPageProps) {
       </div>
 
       <div className={`${styles.code} ${styles.code500}`}>500</div>
-      <div className={styles.title}>Đã xảy ra lỗi máy chủ</div>
+      <div className={styles.title}>Server Error</div>
       <div className={styles.desc}>
-        Hệ thống đang gặp sự cố. Vui lòng thử lại sau hoặc liên hệ bộ phận hỗ trợ nếu lỗi vẫn tiếp tục.
+        Something went wrong on our end. Please try again later or contact support if the issue persists.
       </div>
 
       <div className={styles.actions}>
@@ -64,7 +64,7 @@ export function ServerErrorPage({ error, onReset }: ServerErrorPageProps) {
           radius="md"
           onClick={() => navigate(-1)}
         >
-          Quay lại
+          Go Back
         </Button>
         <Button
           variant="light"
@@ -76,7 +76,7 @@ export function ServerErrorPage({ error, onReset }: ServerErrorPageProps) {
             window.location.reload()
           }}
         >
-          Thử lại
+          Retry
         </Button>
         <Button
           component={Link}
@@ -84,13 +84,13 @@ export function ServerErrorPage({ error, onReset }: ServerErrorPageProps) {
           leftSection={<IconHome size={16} />}
           radius="md"
         >
-          Về trang chủ
+          Home
         </Button>
       </div>
 
       {error?.message && (
         <div className={styles.detail}>
-          <div className={styles.detailLabel}>Chi tiết lỗi</div>
+          <div className={styles.detailLabel}>Error Detail</div>
           <div className={styles.detailMsg}>{error.message}</div>
         </div>
       )}

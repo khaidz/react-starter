@@ -51,9 +51,9 @@ export function NotFoundPage() {
       </div>
 
       <div className={styles.code}>404</div>
-      <div className={styles.title}>Trang không tồn tại</div>
+      <div className={styles.title}>Page Not Found</div>
       <div className={styles.desc}>
-        Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng.
+        The page you are looking for may have been removed, renamed, or is temporarily unavailable.
       </div>
 
       <div className={styles.actions}>
@@ -63,7 +63,7 @@ export function NotFoundPage() {
           radius="md"
           onClick={() => navigate(-1)}
         >
-          Quay lại
+          Go Back
         </Button>
         <Button
           component={Link}
@@ -71,7 +71,7 @@ export function NotFoundPage() {
           leftSection={<IconHome size={16} />}
           radius="md"
         >
-          Về trang chủ
+          Home
         </Button>
       </div>
       </div>

@@ -120,13 +120,13 @@ export function FileUploader({
     }
 
     modals.openConfirmModal({
-      title: 'Xóa file',
+      title: 'Delete File',
       children: (
         <Text size="sm">
-          Bạn có chắc muốn xóa <strong>{item.name}</strong>?
+          Are you sure you want to delete <strong>{item.name}</strong>?
         </Text>
       ),
-      labels: { confirm: 'Xóa', cancel: 'Hủy' },
+      labels: { confirm: 'Delete', cancel: 'Cancel' },
       confirmProps: { color: 'red' },
       onConfirm: () => doDelete(item),
     })
@@ -180,7 +180,7 @@ export function FileUploader({
             <IconPaperclip size={16} color="var(--mantine-color-dimmed)" />
           </Dropzone.Idle>
           <Text size="xs" c="dimmed">
-            Kéo thả file vào đây hoặc{' '}
+            Drag & drop files here or{' '}
             <Text
               span
               c="blue"
@@ -190,9 +190,9 @@ export function FileUploader({
                 openRef.current?.()
               }}
             >
-              chọn file
+              browse
             </Text>
-            {maxSize && ` — tối đa ${humanSize(maxSize)}`}
+            {maxSize && ` — max ${humanSize(maxSize)}`}
           </Text>
           {uploading && <Loader size={12} />}
         </Group>
@@ -223,7 +223,7 @@ export function FileUploader({
                 {it.deleting ? (
                   <Loader size={10} color="red" style={{ flexShrink: 0 }} />
                 ) : (
-                  <Tooltip label="Xóa file" withArrow>
+                  <Tooltip label="Remove file" withArrow>
                     <ActionIcon
                       size="xs"
                       color="red"

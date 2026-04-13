@@ -1,0 +1,106 @@
+// ── Tree wrapper — matches DataTable wrapper ───────────────────────────────────
+
+.treeWrapper {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+// ── Toolbar ────────────────────────────────────────────────────────────────────
+
+.treeToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  min-height: 44px;
+  gap: 0.5rem;
+}
+
+.treeToolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.treeToolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// ── Body ───────────────────────────────────────────────────────────────────────
+
+.treeBody {
+  overflow-x: auto;
+}
+
+.treeState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+}
+
+// ── Tree rows ──────────────────────────────────────────────────────────────────
+
+.treeRow {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  border-radius: 4px;
+  padding: 2px 4px;
+  gap: 4px;
+
+  &:hover {
+    background: #f9fafb;
+  }
+}
+
+.treeIndent {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.treePrefix {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #d1d5db;
+  white-space: pre;
+  line-height: 1;
+  user-select: none;
+}
+
+.expandBtn {
+  flex-shrink: 0;
+}
+
+.leafDot {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.treeContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 2px 4px;
+}
+
+// ── Search highlight ───────────────────────────────────────────────────────────
+
+.highlight {
+  background: #fff176;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
