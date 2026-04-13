@@ -5,7 +5,8 @@
       "Bash(npm list:*)",
       "Bash(npm run:*)",
       "Bash(npx tsc:*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Read(//d/3-Code/spring-boot-starter/src/main/java/net/khaibq/springbootstarter/workflow/constant/**)"
     ]
   }
 }

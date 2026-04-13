@@ -30,20 +30,20 @@ import { InstanceDetailPanel } from './detail'
 import styles from './workflow-runner.module.scss'
 
 const WORKFLOW_STATUS_COLOR: Record<WorkflowStatus, string> = {
-  PENDING: 'gray',
-  IN_PROGRESS: 'blue',
+  RUNNING: 'blue',
   COMPLETED: 'green',
-  CANCELLED: 'red',
-  ERROR: 'orange',
+  REJECTED: 'red',
+  CANCELLED: 'gray',
+  RECALLED: 'orange',
 }
 
 const STATUS_OPTIONS = [
   { value: '', label: 'All' },
-  { value: 'PENDING', label: 'Pending' },
-  { value: 'IN_PROGRESS', label: 'In Progress' },
+  { value: 'RUNNING', label: 'Running' },
   { value: 'COMPLETED', label: 'Completed' },
+  { value: 'REJECTED', label: 'Rejected' },
   { value: 'CANCELLED', label: 'Cancelled' },
-  { value: 'ERROR', label: 'Error' },
+  { value: 'RECALLED', label: 'Recalled' },
 ]
 
 function formatDateTime(value: string | null | undefined) {

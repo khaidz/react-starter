@@ -11,6 +11,8 @@ const ASSIGNEE_TYPE_OPTIONS = [
   { value: 'ROLE', label: 'Role' },
   { value: 'USER', label: 'User' },
   { value: 'DEPT_OWNER', label: 'Department owner' },
+  { value: 'WORKFLOW_CREATOR', label: 'Workflow creator' },
+  { value: 'CONTEXT', label: 'Context variable' },
 ]
 
 interface Props {

@@ -6,9 +6,9 @@ export type CompletionCondition = 'ALL' | 'ANY' | 'PERCENT'
 
 export type SlaAction = 'AUTO_APPROVE' | 'AUTO_REJECT' | 'ESCALATE'
 
-export type AssigneeType = 'ROLE' | 'USER' | 'DEPT_OWNER' | 'WORKFLOW_CREATOR'
+export type AssigneeType = 'ROLE' | 'USER' | 'DEPT_OWNER' | 'WORKFLOW_CREATOR' | 'CONTEXT'
 
-export type ActionType = 'START' | 'APPROVE' | 'REJECT' | 'REWORK' | 'EDIT_REQUEST' | 'TRANSFER' | 'FINISH' | 'CANCEL' | 'RECALL'
+export type ActionType = 'START' | 'SUBMIT' | 'APPROVE' | 'REJECT' | 'REWORK' | 'EDIT_REQUEST' | 'TRANSFER' | 'PICKUP' | 'SHARE' | 'FINISH' | 'CANCEL' | 'RECALL'
 
 export interface AssigneeTemplate {
   id: number
@@ -122,9 +122,9 @@ export interface PageDTO<T> {
   totalPages: number
 }
 
-export type WorkflowStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ERROR'
+export type WorkflowStatus = 'RUNNING' | 'COMPLETED' | 'REJECTED' | 'CANCELLED' | 'RECALLED'
 
-export type StepStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'SKIPPED' | 'ERROR'
+export type StepStatus = 'PENDING' | 'IN_PROGRESS' | 'WAITING_SUB_FLOW' | 'COMPLETED' | 'REJECTED' | 'CANCELLED'
 
 export interface AssigneeInfo {
   userId: string

@@ -7,11 +7,13 @@ import { adminFlowsApi } from '@/api/workflow.api'
 
 export const ACTION_TYPE_OPTIONS = [
   { value: 'START', label: 'Start' },
+  { value: 'SUBMIT', label: 'Submit' },
   { value: 'APPROVE', label: 'Approve' },
   { value: 'REJECT', label: 'Reject' },
   { value: 'REWORK', label: 'Rework' },
   { value: 'TRANSFER', label: 'Transfer' },
-  { value: 'EDIT', label: 'Edit' },
+  { value: 'EDIT_REQUEST', label: 'Edit Request' },
+  { value: 'PICKUP', label: 'Pick Up' },
   { value: 'SHARE', label: 'Share' },
   { value: 'FINISH', label: 'Finish' },
   { value: 'CANCEL', label: 'Cancel' },

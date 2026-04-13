@@ -7,11 +7,11 @@ import {
   Divider,
   Group,
   Loader,
-
   Paper,
   SimpleGrid,
   Stack,
   Table,
+  Tabs,
   Text,
   Title,
   Tooltip,
@@ -27,6 +27,8 @@ import {
   IconPlayerPause,
   IconPlayerPlay,
   IconPlus,
+  IconSchema,
+  IconSettings,
   IconTrash,
   IconX,
 } from '@tabler/icons-react'
@@ -35,6 +37,7 @@ import { adminFlowsApi } from '@/api/workflow.api'
 import type { AssigneeTemplate, FlowStatus, FlowStep, Transition } from '@/types/workflow'
 import { ActionModal } from './components/ActionModal'
 import { AssigneeModal } from './components/AssigneeModal'
+import { FlowDiagram } from './components/FlowDiagram'
 import { StepModal } from './components/StepModal'
 import { TransitionModal } from './components/TransitionModal'
 
@@ -73,6 +76,8 @@ const ASSIGNEE_TYPE_LABEL: Record<string, string> = {
   ROLE: 'Role',
   USER: 'User',
   DEPT_OWNER: 'Dept owner',
+  WORKFLOW_CREATOR: 'Workflow creator',
+  CONTEXT: 'Context',
 }
 
 // --- Sub-components ---
@@ -460,6 +465,7 @@ export function FlowDetailPanel({
   const id = flowIdProp
 
   const [addStepOpen, { open: openAddStep, close: closeAddStep }] = useDisclosure(false)
+  const [activeTab, setActiveTab] = useState('config')
 
   const { data: flow, isLoading } = useQuery({
     queryKey: ['admin-flows', id],
@@ -621,42 +627,59 @@ export function FlowDetailPanel({
           </Group>
         </Group>
 
-        {/* Steps */}
-        <Paper withBorder radius="md" p="md">
-          <Group justify="space-between" mb="md">
-            <Text fw={600}>Steps ({sortedSteps.length})</Text>
-            {isDraft && (
-              <Button size="sm" leftSection={<IconPlus size={15} />} onClick={openAddStep}>
-                Add step
-              </Button>
-            )}
-          </Group>
+        {/* Tabs: Config / Diagram */}
+        <Tabs value={activeTab} onChange={(v) => setActiveTab(v ?? 'config')} variant="outline">
+          <Tabs.List mb="md">
+            <Tabs.Tab value="config" leftSection={<IconSettings size={14} />}>
+              Config
+            </Tabs.Tab>
+            <Tabs.Tab value="diagram" leftSection={<IconSchema size={14} />}>
+              Diagram
+            </Tabs.Tab>
+          </Tabs.List>
 
-          {sortedSteps.length === 0 ? (
-            <Text c="dimmed" ta="center" py="xl" fs="italic">
-              No steps yet. Click &quot;Add step&quot; to get started.
-            </Text>
-          ) : (
-            <Accordion
-              multiple
-              variant="separated"
-              radius="md"
-              styles={{
-                control: { backgroundColor: 'var(--mantine-color-gray-0)' },
-              }}
-            >
-              {sortedSteps.map((step) => (
-                <StepCard
-                  key={step.id}
-                  step={step}
-                  flowId={id}
-                  allSteps={sortedSteps}
-                  isDraft={isDraft}
-                />
-              ))}
-            </Accordion>
-          )}
-        </Paper>
+          {/* Config tab */}
+          <Tabs.Panel value="config">
+            <Paper withBorder radius="md" p="md">
+              <Group justify="space-between" mb="md">
+                <Text fw={600}>Steps ({sortedSteps.length})</Text>
+                {isDraft && (
+                  <Button size="sm" leftSection={<IconPlus size={15} />} onClick={openAddStep}>
+                    Add step
+                  </Button>
+                )}
+              </Group>
+
+              {sortedSteps.length === 0 ? (
+                <Text c="dimmed" ta="center" py="xl" fs="italic">
+                  No steps yet. Click &quot;Add step&quot; to get started.
+                </Text>
+              ) : (
+                <Accordion
+                  multiple
+                  variant="separated"
+                  radius="md"
+                  styles={{ control: { backgroundColor: 'var(--mantine-color-gray-0)' } }}
+                >
+                  {sortedSteps.map((step) => (
+                    <StepCard
+                      key={step.id}
+                      step={step}
+                      flowId={id}
+                      allSteps={sortedSteps}
+                      isDraft={isDraft}
+                    />
+                  ))}
+                </Accordion>
+              )}
+            </Paper>
+          </Tabs.Panel>
+
+          {/* Diagram tab */}
+          <Tabs.Panel value="diagram">
+            <FlowDiagram steps={sortedSteps} isActive={activeTab === 'diagram'} />
+          </Tabs.Panel>
+        </Tabs>
       </Stack>
 
       <StepModal opened={addStepOpen} onClose={closeAddStep} flowId={id} />

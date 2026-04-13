@@ -7,6 +7,7 @@ import {
   Group,
   Loader,
   Stack,
+  Tabs,
   Text,
   Tooltip,
 } from '@mantine/core'
@@ -14,39 +15,42 @@ import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { IconRefresh, IconShare, IconX } from '@tabler/icons-react'
+import { IconRefresh, IconSchema, IconShare, IconTimeline, IconX } from '@tabler/icons-react'
 import { workflowApi } from '@/api/workflow.api'
 import { notifyError } from '@/lib/notify'
 import type { ActionType, StepInstance, StepTimeline, WorkflowAttachment, WorkflowStatus } from '@/types/workflow'
 import { ActionModal } from './components/ActionModal'
-import { AttachmentRow, attachmentLabel } from './components/AttachmentsPanel'
+import { AttachmentRow } from './components/AttachmentsPanel'
+import { RunnerDiagram } from './components/RunnerDiagram'
 import { ShareModal } from './components/ShareModal'
 import styles from './workflow-runner.module.scss'
 
 const WORKFLOW_STATUS_COLOR: Record<WorkflowStatus, string> = {
-  PENDING: 'gray',
-  IN_PROGRESS: 'blue',
+  RUNNING: 'blue',
   COMPLETED: 'green',
-  CANCELLED: 'red',
-  ERROR: 'orange',
+  REJECTED: 'red',
+  CANCELLED: 'gray',
+  RECALLED: 'orange',
 }
 
 const STEP_STATUS_COLOR: Record<string, string> = {
   PENDING: 'gray',
   IN_PROGRESS: 'blue',
+  WAITING_SUB_FLOW: 'violet',
   COMPLETED: 'green',
-  SKIPPED: 'dimmed',
-  ERROR: 'red',
+  REJECTED: 'red',
+  CANCELLED: 'gray',
 }
 
 const ACTION_COLOR: Partial<Record<ActionType, string>> = {
   APPROVE: 'green',
+  SUBMIT: 'blue',
   REJECT: 'red',
   REWORK: 'orange',
   CANCEL: 'red',
   FINISH: 'teal',
   TRANSFER: 'violet',
-  EDIT: 'blue',
+  EDIT_REQUEST: 'blue',
   SHARE: 'cyan',
 }
 
@@ -220,6 +224,7 @@ export function InstanceDetailPanel({
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const [shareOpened, { open: openShare, close: closeShare }] = useDisclosure(false)
+  const [activeTab, setActiveTab] = useState('timeline')
 
   const { data: timeline, isLoading: loadingTimeline, refetch: refetchTimeline } = useQuery({
     queryKey: ['workflow-timeline', instanceId],
@@ -283,11 +288,12 @@ export function InstanceDetailPanel({
     }
   }
 
-  const canCancel = timeline.status === 'PENDING' || timeline.status === 'IN_PROGRESS'
+  const canCancel = timeline.status === 'RUNNING'
 
   return (
     <div className={styles.detailCard}>
       {/* Header */}
+      <div className={styles.detailHeader}>
       <Group justify="space-between" align="flex-start" wrap="nowrap">
         <div>
           <Group gap={8} align="center">
@@ -348,24 +354,52 @@ export function InstanceDetailPanel({
           )}
         </Group>
       </Group>
+      </div>
 
-      {/* Steps */}
-      <Stack gap="xs">
-        {timeline.steps.map((step, i) => {
-          const si = stepInstanceByOrder.get(step.stepOrder)
-          return (
-            <StepCard
-              key={i}
-              step={step}
-              stepInstance={si}
-              workflowInstanceId={instanceId}
-              currentUsername={user?.username}
-              attachments={si ? (attachmentsByStep.get(si.id) ?? []) : []}
-              onActionSuccess={refetchAll}
-            />
-          )
-        })}
-      </Stack>
+      {/* Tabs: Timeline / Diagram */}
+      <Tabs
+        value={activeTab}
+        onChange={(v) => setActiveTab(v ?? 'timeline')}
+        variant="outline"
+        style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}
+      >
+        <Tabs.List style={{ flexShrink: 0 }}>
+          <Tabs.Tab value="timeline" leftSection={<IconTimeline size={13} />}>
+            Timeline
+          </Tabs.Tab>
+          <Tabs.Tab value="diagram" leftSection={<IconSchema size={13} />}>
+            Diagram
+          </Tabs.Tab>
+        </Tabs.List>
+
+        {/* Timeline tab */}
+        <Tabs.Panel value="timeline" className={styles.detailBody}>
+          <Stack gap="xs">
+            {timeline.steps.map((step, i) => {
+              const si = stepInstanceByOrder.get(step.stepOrder)
+              return (
+                <StepCard
+                  key={i}
+                  step={step}
+                  stepInstance={si}
+                  workflowInstanceId={instanceId}
+                  currentUsername={user?.username}
+                  attachments={si ? (attachmentsByStep.get(si.id) ?? []) : []}
+                  onActionSuccess={refetchAll}
+                />
+              )
+            })}
+          </Stack>
+        </Tabs.Panel>
+
+        {/* Diagram tab */}
+        <Tabs.Panel
+          value="diagram"
+          style={{ flex: 1, minHeight: 0, paddingTop: '0.5rem' }}
+        >
+          <RunnerDiagram steps={timeline.steps} isActive={activeTab === 'diagram'} />
+        </Tabs.Panel>
+      </Tabs>
 
       <ShareModal
         opened={shareOpened}
