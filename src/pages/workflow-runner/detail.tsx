@@ -46,12 +46,12 @@ const ACTION_COLOR: Partial<Record<ActionType, string>> = {
   APPROVE: 'green',
   SUBMIT: 'blue',
   REJECT: 'red',
-  REWORK: 'orange',
   CANCEL: 'red',
   FINISH: 'teal',
   TRANSFER: 'violet',
   EDIT_REQUEST: 'blue',
   SHARE: 'cyan',
+  ADD_ASSIGNEE: 'grape',
 }
 
 function formatDateTime(value: string | null | undefined) {

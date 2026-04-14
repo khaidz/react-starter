@@ -10,13 +10,13 @@ export const ACTION_TYPE_OPTIONS = [
   { value: 'SUBMIT', label: 'Submit' },
   { value: 'APPROVE', label: 'Approve' },
   { value: 'REJECT', label: 'Reject' },
-  { value: 'REWORK', label: 'Rework' },
   { value: 'TRANSFER', label: 'Transfer' },
   { value: 'EDIT_REQUEST', label: 'Edit Request' },
   { value: 'PICKUP', label: 'Pick Up' },
   { value: 'SHARE', label: 'Share' },
   { value: 'FINISH', label: 'Finish' },
   { value: 'CANCEL', label: 'Cancel' },
+  { value: 'ADD_ASSIGNEE', label: 'Add Assignee' },
 ]
 
 interface Props {
@@ -65,6 +65,13 @@ export function ActionModal({ opened, onClose, stepId, flowId }: Props) {
             data={ACTION_TYPE_OPTIONS}
             placeholder="Select action type"
             {...form.getInputProps('actionType')}
+            onChange={(value) => {
+              form.setFieldValue('actionType', value ?? '')
+              const label = ACTION_TYPE_OPTIONS.find((o) => o.value === value)?.label ?? ''
+              if (!form.values.name || ACTION_TYPE_OPTIONS.some((o) => o.label === form.values.name)) {
+                form.setFieldValue('name', label)
+              }
+            }}
           />
           <TextInput
             label="Display name"

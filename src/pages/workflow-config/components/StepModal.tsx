@@ -43,7 +43,6 @@ type FormValues = {
   slaDuration: number | string
   slaAction: string
   subFlowCode: string
-  maxRetries: number | string
   allowPickup: boolean
 }
 
@@ -61,7 +60,6 @@ export function StepModal({ opened, onClose, flowId, step }: Props) {
       slaDuration: step?.slaDuration ?? '',
       slaAction: step?.slaAction ?? '',
       subFlowCode: step?.subFlowCode ?? '',
-      maxRetries: step?.maxRetries ?? '',
       allowPickup: step?.allowPickup ?? false,
     },
     validate: {
@@ -87,7 +85,6 @@ export function StepModal({ opened, onClose, flowId, step }: Props) {
     slaDuration: v.slaDuration !== '' ? Number(v.slaDuration) : null,
     slaAction: v.slaAction || null,
     subFlowCode: v.type === 'SUB_FLOW' ? v.subFlowCode || null : null,
-    maxRetries: v.maxRetries !== '' ? Number(v.maxRetries) : null,
     allowPickup: v.allowPickup,
   })
 
@@ -128,7 +125,6 @@ export function StepModal({ opened, onClose, flowId, step }: Props) {
         slaDuration: step?.slaDuration ?? '',
         slaAction: step?.slaAction ?? '',
         subFlowCode: step?.subFlowCode ?? '',
-        maxRetries: step?.maxRetries ?? '',
         allowPickup: step?.allowPickup ?? false,
       })
     }
@@ -217,13 +213,6 @@ export function StepModal({ opened, onClose, flowId, step }: Props) {
           )}
 
           <Divider label="Advanced" labelPosition="left" />
-
-          <NumberInput
-            label="Max retries"
-            description="Leave empty = unlimited; 0 = no retry allowed"
-            min={0}
-            {...form.getInputProps('maxRetries')}
-          />
 
           <Switch
             label="Allow pickup"

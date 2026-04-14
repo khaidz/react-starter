@@ -203,12 +203,6 @@ function StepCard({
                   </Text>
                 </div>
               )}
-              {step.maxRetries != null && (
-                <div>
-                  <Text size="xs" c="dimmed">Max retries</Text>
-                  <Text size="sm">{step.maxRetries === 0 ? 'No retry' : step.maxRetries}</Text>
-                </div>
-              )}
               <div>
                 <Text size="xs" c="dimmed">Allow pickup</Text>
                 <Text size="sm">{step.allowPickup ? 'Yes' : 'No'}</Text>

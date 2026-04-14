@@ -8,7 +8,7 @@ export type SlaAction = 'AUTO_APPROVE' | 'AUTO_REJECT' | 'ESCALATE'
 
 export type AssigneeType = 'ROLE' | 'USER' | 'DEPT_OWNER' | 'WORKFLOW_CREATOR' | 'CONTEXT'
 
-export type ActionType = 'START' | 'SUBMIT' | 'APPROVE' | 'REJECT' | 'REWORK' | 'EDIT_REQUEST' | 'TRANSFER' | 'PICKUP' | 'SHARE' | 'FINISH' | 'CANCEL' | 'RECALL'
+export type ActionType = 'START' | 'SUBMIT' | 'APPROVE' | 'REJECT' | 'EDIT_REQUEST' | 'TRANSFER' | 'PICKUP' | 'SHARE' | 'FINISH' | 'CANCEL' | 'RECALL' | 'ADD_ASSIGNEE'
 
 export interface AssigneeTemplate {
   id: number
@@ -45,7 +45,6 @@ export interface FlowStep {
   slaAction: SlaAction | null
   /** Code của sub-flow. Chỉ có giá trị khi type = SUB_FLOW. */
   subFlowCode: string | null
-  maxRetries: number | null
   allowPickup: boolean
   assignees: AssigneeTemplate[]
   transitions: Transition[]
@@ -86,7 +85,6 @@ export interface CreateStepPayload {
   slaDuration: number | null
   slaAction: SlaAction | null
   subFlowCode: string | null
-  maxRetries: number | null
   allowPickup: boolean
 }
 
@@ -230,6 +228,8 @@ export interface SubmitActionPayload {
   actionType: ActionType
   comment?: string
   transferToUserId?: string
+  sharedToUserIds?: string[]
+  addAssigneeUserIds?: string[]
   fileKeys?: string[]
 }
 

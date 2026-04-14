@@ -55,7 +55,6 @@ const STATUS_TEXT: Record<string, string> = {
 const ACTION_COLOR: Record<string, string> = {
   APPROVE: '#2f9e44',
   REJECT: '#e03131',
-  REWORK: '#e67700',
   CANCEL: '#c92a2a',
   FINISH: '#0ca678',
   TRANSFER: '#6741d9',
@@ -63,6 +62,7 @@ const ACTION_COLOR: Record<string, string> = {
   EDIT_REQUEST: '#1971c2',
   RECALL: '#f08c00',
   PICKUP: '#0c8599',
+  ADD_ASSIGNEE: '#9c36b5',
 }
 
 // ── Dagre layout ───────────────────────────────────────────────────────────────
