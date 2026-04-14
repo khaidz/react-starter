@@ -27,6 +27,18 @@ const ApiKeyPage = lazy(() =>
 const NotificationAdminPage = lazy(() =>
   import('@/pages/notification').then((m) => ({ default: m.NotificationAdminPage })),
 )
+const CsvMergerPage = lazy(() =>
+  import('@/pages/csv-merger').then((m) => ({ default: m.CsvMergerPage })),
+)
+const JsonToExcelPage = lazy(() =>
+  import('@/pages/json-to-excel').then((m) => ({ default: m.JsonToExcelPage })),
+)
+const ExcelViewerPage = lazy(() =>
+  import('@/pages/excel-viewer').then((m) => ({ default: m.ExcelViewerPage })),
+)
+const CodeConverterPage = lazy(() =>
+  import('@/pages/code-converter').then((m) => ({ default: m.CodeConverterPage })),
+)
 
 export const privateRoutes: RouteConfig[] = [
   {
@@ -71,5 +83,21 @@ export const privateRoutes: RouteConfig[] = [
     path: '/notifications/admin',
     component: NotificationAdminPage,
     roles: [Roles.ADMIN],
+  },
+  {
+    path: '/tools/csv-merger',
+    component: CsvMergerPage,
+  },
+  {
+    path: '/tools/json-to-excel',
+    component: JsonToExcelPage,
+  },
+  {
+    path: '/tools/excel-viewer',
+    component: ExcelViewerPage,
+  },
+  {
+    path: '/tools/code-converter',
+    component: CodeConverterPage,
   },
 ]

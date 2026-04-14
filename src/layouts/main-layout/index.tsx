@@ -24,6 +24,10 @@ import {
   IconSettings,
   IconShieldCheck,
   IconShieldLock,
+  IconTableImport,
+  IconFileCode,
+  IconTable,
+  IconArrowsRightLeft,
   IconUser,
 } from '@tabler/icons-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
@@ -61,6 +65,15 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { to: '/workflow-config', label: 'Workflow Config', icon: IconGitFork, roles: [Roles.ADMIN] },
       { to: '/workflow-runner', label: 'Workflow Runner', icon: IconPlayerPlay },
+    ],
+  },
+  {
+    label: 'Tools',
+    items: [
+      { to: '/tools/csv-merger', label: 'CSV Merger', icon: IconTableImport },
+      { to: '/tools/json-to-excel', label: 'JSON to Excel', icon: IconFileCode },
+      { to: '/tools/excel-viewer', label: 'Excel Viewer', icon: IconTable },
+      { to: '/tools/code-converter', label: 'Code Converter', icon: IconArrowsRightLeft },
     ],
   },
   {

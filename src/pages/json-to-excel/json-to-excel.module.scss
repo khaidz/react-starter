@@ -1,0 +1,90 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto !important;
+}
+
+.pageTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.pageSubtitle {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin-top: 0.15rem;
+}
+
+/* ── Editor block ── */
+.editorWrapper {
+  position: relative;
+  border: 1.5px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+
+  &:focus-within {
+    border-color: #74c0fc;
+  }
+
+  &.dragging {
+    border-color: #339af0;
+    background: #e8f4fd;
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e9ecef;
+  gap: 8px;
+}
+
+.editor {
+  display: block;
+
+  textarea {
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    resize: none;
+    padding: 10px 12px;
+    line-height: 1.6;
+  }
+}
+
+.dropOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(232, 244, 253, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+  border-radius: 8px;
+}
+
+/* ── Result bar ── */
+.resultBar {
+  background: #f8fafc;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+}
+
+/* ── Export button ── */
+.exportBtn {
+  background: linear-gradient(90deg, #2f9e44, #2b8a3e) !important;
+  border: none !important;
+
+  &:hover {
+    background: linear-gradient(90deg, #2b8a3e, #237032) !important;
+  }
+}

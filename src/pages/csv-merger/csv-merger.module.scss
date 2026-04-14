@@ -1,0 +1,79 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto !important;
+}
+
+.pageTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.pageSubtitle {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin-top: 0.15rem;
+}
+
+.dropzone {
+  border: 2px dashed #dee2e6 !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover,
+  &[data-accept] {
+    border-color: #74c0fc !important;
+    background: #e8f4fd !important;
+  }
+
+  &[data-reject] {
+    border-color: #f03e3e !important;
+    background: #fff5f5 !important;
+  }
+}
+
+.dropzoneInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  pointer-events: none;
+}
+
+.fileRow {
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.dragHandle {
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.exportBtn {
+  background: linear-gradient(90deg, #2f9e44, #2b8a3e) !important;
+  border: none !important;
+
+  &:hover {
+    background: linear-gradient(90deg, #2b8a3e, #237032) !important;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.optionsCard {
+  background: #f8fafc;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
