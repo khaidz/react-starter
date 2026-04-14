@@ -81,10 +81,13 @@ function StepCard({
   } | null>(null)
 
   const isActive = step.status === 'IN_PROGRESS'
-  const isAssignee = !!currentUsername && step.assignees?.some((a) => a.userId === currentUsername)
+  const currentAssignee = currentUsername
+    ? step.assignees?.find((a) => a.userId === currentUsername)
+    : undefined
+  const assigneeCanAct = !!currentAssignee && currentAssignee.status === 'PENDING'
   const allowedActions = stepInstance?.allowedActions ?? []
-  const hasActions = isActive && isAssignee && allowedActions.length > 0
-  const canPickup = isActive && !!stepInstance?.allowPickup
+  const hasActions = isActive && assigneeCanAct && allowedActions.length > 0
+  const canPickup = isActive && !!stepInstance?.allowPickup && !currentAssignee
 
   const pickupMutation = useMutation({
     mutationFn: () => workflowApi.pickup(workflowInstanceId, stepInstance!.id),

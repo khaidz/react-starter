@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router'
 import { AuthGuard, GuestGuard } from '@/components/auth-guard'
 import { PermissionGuard } from '@/components/permission-guard'
@@ -8,9 +9,23 @@ import { NotFoundPage } from '@/pages/error/not-found'
 import { publicRoutes } from './public-routes'
 import { privateRoutes } from './private-routes'
 
+const AuthCallbackPage = lazy(() =>
+  import('@/pages/auth-callback').then((m) => ({ default: m.AuthCallbackPage })),
+)
+
 export function AppRoutes() {
   return (
     <Routes>
+      {/* Azure AD callback — nằm ngoài GuestGuard */}
+      <Route
+        path="/auth/callback"
+        element={
+          <Suspense fallback={null}>
+            <AuthCallbackPage />
+          </Suspense>
+        }
+      />
+
       {/* Public */}
       <Route element={<GuestGuard />}>
         <Route element={<AuthLayout />}>

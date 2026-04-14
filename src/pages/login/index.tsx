@@ -1,16 +1,20 @@
-import { Button, Divider, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core'
+import { Button, Divider, Group, Paper, PasswordInput, Stack, Text, TextInput, Tooltip } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { useMutation } from '@tanstack/react-query'
-import { IconBrandAzure, IconLock, IconUser } from '@tabler/icons-react'
+import { IconBrandAzure, IconBrandGithub, IconBrandGoogle, IconLock, IconUser } from '@tabler/icons-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { authApi } from '@/api/auth.api'
 import { useAuthStore } from '@/store/auth.store'
 import styles from './login.module.scss'
 
+const OAUTH_CALLBACK_URI = `${window.location.origin}/auth/callback`
+
 export function LoginPage() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((s) => s.setAuth)
+  const [oauthLoading, setOauthLoading] = useState<string | null>(null)
 
   const form = useForm({
     initialValues: {
@@ -48,6 +52,19 @@ export function LoginPage() {
     login(values)
   })
 
+  const handleOAuthLogin = async (provider: string) => {
+    setOauthLoading(provider)
+    try {
+      sessionStorage.setItem('oauth_provider', provider)
+      const { authorizationUrl } = await authApi.getOAuthAuthorizeUrl(provider, OAUTH_CALLBACK_URI)
+      window.location.href = authorizationUrl
+    } catch {
+      sessionStorage.removeItem('oauth_provider')
+      notifications.show({ title: 'Error', message: `Could not initiate ${provider} login`, color: 'red' })
+      setOauthLoading(null)
+    }
+  }
+
   return (
     <Paper className={styles.card} shadow="md" radius="lg">
       <Text className={styles.cardTitle}>Welcome Back</Text>
@@ -75,14 +92,46 @@ export function LoginPage() {
 
           <Divider label="OR CONTINUE WITH" labelPosition="center" />
 
-          <Button
-            variant="outline"
-            fullWidth
-            className={styles.qrBtn}
-            leftSection={<IconBrandAzure size={20} color="#0078d4" />}
-          >
-            Login with Azure AD
-          </Button>
+          <Group grow gap="sm">
+            <Tooltip label="Google" withArrow>
+              <Button
+                variant="outline"
+                className={styles.qrBtn}
+                leftSection={<IconBrandGoogle size={18} color="#ea4335" />}
+                loading={oauthLoading === 'google'}
+                disabled={oauthLoading !== null}
+                onClick={() => handleOAuthLogin('google')}
+              >
+                Google
+              </Button>
+            </Tooltip>
+
+            <Tooltip label="GitHub" withArrow>
+              <Button
+                variant="outline"
+                className={styles.qrBtn}
+                leftSection={<IconBrandGithub size={18} color="#24292e" />}
+                loading={oauthLoading === 'github'}
+                disabled={oauthLoading !== null}
+                onClick={() => handleOAuthLogin('github')}
+              >
+                GitHub
+              </Button>
+            </Tooltip>
+
+            <Tooltip label="Azure AD" withArrow>
+              <Button
+                variant="outline"
+                className={styles.qrBtn}
+                leftSection={<IconBrandAzure size={18} color="#0078d4" />}
+                loading={oauthLoading === 'microsoft'}
+                disabled={oauthLoading !== null}
+                onClick={() => handleOAuthLogin('microsoft')}
+              >
+                Azure AD
+              </Button>
+            </Tooltip>
+          </Group>
 
           <Text className={styles.bottomText}></Text>
         </Stack>
