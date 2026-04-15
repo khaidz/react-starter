@@ -39,9 +39,15 @@ export function applyFormats(ws: XLSX.WorkSheet, file: CsvFile) {
           cell.z = NUM_FMT[fmt]
         }
       } else if (fmt === 'date_dmy' || fmt === 'date_ymd' || fmt === 'datetime') {
-        const d = new Date(raw)
+        const epoch = new Date(1899, 11, 30).getTime()
+        let d = new Date(raw)
+        // Fallback: try as Excel serial number
+        if (isNaN(d.getTime())) {
+          const serial = parseFloat(raw)
+          if (!isNaN(serial) && serial > 1) d = new Date(epoch + serial * 86400000)
+        }
         if (!isNaN(d.getTime())) {
-          const serial = (d.getTime() - new Date(1899, 11, 30).getTime()) / 86400000
+          const serial = (d.getTime() - epoch) / 86400000
           cell.t = 'n'; cell.v = serial; cell.z = NUM_FMT[fmt]
         }
       }

@@ -23,26 +23,45 @@ interface ExcelFile {
   sheets: CsvFile[]
 }
 
+function formatDateCell(d: Date): string {
+  const yyyy = d.getFullYear()
+  const mm   = String(d.getMonth() + 1).padStart(2, '0')
+  const dd   = String(d.getDate()).padStart(2, '0')
+  const hh   = String(d.getHours()).padStart(2, '0')
+  const min  = String(d.getMinutes()).padStart(2, '0')
+  // Show time only when it's not midnight
+  return (d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0)
+    ? `${dd}/${mm}/${yyyy}`
+    : `${dd}/${mm}/${yyyy} ${hh}:${min}`
+}
+
+function cellToString(val: unknown): string {
+  if (val === null || val === undefined) return ''
+  if (val instanceof Date) return formatDateCell(val)
+  return String(val)
+}
+
 function readExcel(file: File): Promise<ExcelFile> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = (e) => {
       try {
         const data = e.target?.result as ArrayBuffer
-        const wb = XLSX.read(data, { type: 'array', dense: true })
+        // cellDates: true → SheetJS trả về Date object thay vì serial number
+        const wb = XLSX.read(data, { type: 'array', dense: true, cellDates: true })
 
         const sheets: CsvFile[] = wb.SheetNames.map((name) => {
           const ws = wb.Sheets[name]
-          const raw = XLSX.utils.sheet_to_json<string[]>(ws, {
+          const raw = XLSX.utils.sheet_to_json<unknown[]>(ws, {
             header: 1,
             defval: '',
             blankrows: false,
           })
 
-          const [headerRow = [], ...dataRows] = raw
-          const headers = headerRow.map((h) => String(h ?? ''))
+          const [headerRow = [], ...dataRows] = raw as unknown[][]
+          const headers = (headerRow as unknown[]).map((h) => cellToString(h))
           const rows = dataRows.map((r) =>
-            headers.map((_, ci) => String(r[ci] ?? '')),
+            headers.map((_, ci) => cellToString((r as unknown[])[ci])),
           )
 
           return {

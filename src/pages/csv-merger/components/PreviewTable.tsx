@@ -10,6 +10,21 @@ const PAGE_SIZE_OPTIONS = [
   { value: '500', label: '500 / page' },
 ]
 
+const EXCEL_EPOCH = new Date(1899, 11, 30).getTime()
+
+/** Parse date string or Excel serial number (e.g. 45676) to a Date */
+function parseDate(value: string): Date | null {
+  const d = new Date(value)
+  if (!isNaN(d.getTime())) return d
+  // Fallback: try as Excel serial number
+  const serial = parseFloat(value)
+  if (!isNaN(serial) && serial > 1) {
+    const candidate = new Date(EXCEL_EPOCH + serial * 86400000)
+    if (!isNaN(candidate.getTime())) return candidate
+  }
+  return null
+}
+
 function formatCellValue(value: string, fmt: ColFormatType): string {
   if (!value.trim() || fmt === 'text') return value
 
@@ -31,8 +46,8 @@ function formatCellValue(value: string, fmt: ColFormatType): string {
     return (Math.abs(n) > 1 ? n : n * 100).toFixed(2) + '%'
   }
   if (fmt === 'date_dmy' || fmt === 'date_ymd' || fmt === 'datetime') {
-    const d = new Date(value)
-    if (isNaN(d.getTime())) return value
+    const d = parseDate(value)
+    if (!d) return value
     const dd   = d.getDate().toString().padStart(2, '0')
     const mm   = (d.getMonth() + 1).toString().padStart(2, '0')
     const yyyy = d.getFullYear()
