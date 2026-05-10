@@ -21,6 +21,9 @@ const ApiKeyPage = lazy(() =>
 const NotificationAdminPage = lazy(() =>
   import('@/pages/notification').then((m) => ({ default: m.NotificationAdminPage })),
 )
+const JobPage = lazy(() =>
+  import('@/pages/job').then((m) => ({ default: m.JobPage })),
+)
 
 export const privateRoutes: RouteConfig[] = [
   {
@@ -55,6 +58,11 @@ export const privateRoutes: RouteConfig[] = [
   {
     path: '/notifications/admin',
     component: NotificationAdminPage,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: '/jobs',
+    component: JobPage,
     roles: [Roles.ADMIN],
   },
 ]

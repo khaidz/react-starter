@@ -112,3 +112,32 @@ export interface PermissionItem {
   name: string
   description?: string
 }
+
+export type JobStatus = 'RUNNING' | 'SUCCESS' | 'FAILED'
+
+export interface JobLastRun {
+  id: string
+  startedAt: string
+  endedAt?: string
+  status: JobStatus
+  triggeredBy: string
+  message?: string
+}
+
+export interface JobItem {
+  name: string
+  description?: string
+  cron: string
+  enabled: boolean
+  lastRun?: JobLastRun
+}
+
+export interface JobLogItem {
+  id: string
+  jobName: string
+  startedAt: string
+  endedAt?: string
+  status: JobStatus
+  triggeredBy: string
+  message?: string
+}

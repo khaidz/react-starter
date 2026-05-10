@@ -26,6 +26,7 @@ import {
   IconUser,
   IconChevronsLeft,
   IconChevronsRight,
+  IconClockPlay,
 } from '@tabler/icons-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { authApi } from '@/api/auth.api'
@@ -66,6 +67,7 @@ const NAV_SECTIONS: NavSection[] = [
       { to: '/permissions', label: 'Permissions', icon: IconShieldCheck, roles: [Roles.ADMIN] },
       { to: '/api-keys', label: 'API Keys', icon: IconKey, roles: [Roles.ADMIN] },
       { to: '/notifications/admin', label: 'Notifications', icon: IconBell, roles: [Roles.ADMIN] },
+      { to: '/jobs', label: 'Jobs', icon: IconClockPlay, roles: [Roles.ADMIN] },
     ],
   },
 ]
