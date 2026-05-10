@@ -24,6 +24,15 @@ const NotificationAdminPage = lazy(() =>
 const JobPage = lazy(() =>
   import('@/pages/job').then((m) => ({ default: m.JobPage })),
 )
+const LeaveTypePage = lazy(() =>
+  import('@/pages/leave/leave-types').then((m) => ({ default: m.LeaveTypePage })),
+)
+const LeaveRequestPage = lazy(() =>
+  import('@/pages/leave/leave-requests').then((m) => ({ default: m.LeaveRequestPage })),
+)
+const LeaveBalancePage = lazy(() =>
+  import('@/pages/leave/leave-balances').then((m) => ({ default: m.LeaveBalancePage })),
+)
 
 export const privateRoutes: RouteConfig[] = [
   {
@@ -63,6 +72,20 @@ export const privateRoutes: RouteConfig[] = [
   {
     path: '/jobs',
     component: JobPage,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: '/leave/requests',
+    component: LeaveRequestPage,
+  },
+  {
+    path: '/leave/types',
+    component: LeaveTypePage,
+    roles: [Roles.ADMIN],
+  },
+  {
+    path: '/leave/balances',
+    component: LeaveBalancePage,
     roles: [Roles.ADMIN],
   },
 ]

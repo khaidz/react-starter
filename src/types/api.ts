@@ -141,3 +141,45 @@ export interface JobLogItem {
   triggeredBy: string
   message?: string
 }
+
+// ── Leave Management ──────────────────────────────────────────────────────────
+
+export interface LeaveTypeItem {
+  id: string
+  name: string
+  description?: string
+  maxDaysPerYear: number
+  isPaid: boolean
+  isActive: boolean
+}
+
+export interface LeaveBalanceItem {
+  id: string
+  username: string
+  email: string
+  leaveTypeId: string
+  leaveTypeName: string
+  year: number
+  totalDays: number
+  usedDays: number
+  remainingDays: number
+}
+
+export type LeaveRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED'
+
+export interface LeaveRequestItem {
+  id: string
+  requesterUsername: string
+  requesterEmail: string
+  leaveTypeId: string
+  leaveTypeName: string
+  startDate: string
+  endDate: string
+  totalDays: number
+  reason?: string
+  status: LeaveRequestStatus
+  approverUsername?: string
+  approverComment?: string
+  processedAt?: string
+  createdAt: string
+}

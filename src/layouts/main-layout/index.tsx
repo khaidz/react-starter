@@ -27,6 +27,9 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
   IconClockPlay,
+  IconCalendarEvent,
+  IconCalendarStats,
+  IconCalendarCheck,
 } from '@tabler/icons-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { authApi } from '@/api/auth.api'
@@ -56,6 +59,14 @@ const NAV_SECTIONS: NavSection[] = [
     label: 'Main',
     items: [
       { to: '/', label: 'Dashboard', icon: IconLayoutDashboard, end: true },
+    ],
+  },
+  {
+    label: 'Leave',
+    items: [
+      { to: '/leave/requests', label: 'Leave Requests', icon: IconCalendarEvent },
+      { to: '/leave/balances', label: 'Leave Balances', icon: IconCalendarStats, roles: [Roles.ADMIN] },
+      { to: '/leave/types', label: 'Leave Types', icon: IconCalendarCheck, roles: [Roles.ADMIN] },
     ],
   },
   {
