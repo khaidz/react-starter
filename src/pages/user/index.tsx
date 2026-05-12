@@ -1,18 +1,29 @@
-import { usersApi } from '@/api/users.api'
 import { departmentsApi } from '@/api/departments.api'
 import { rolesApi } from '@/api/roles.api'
+import { usersApi } from '@/api/users.api'
 import { DataTable, type TableColumn } from '@/components/data-table'
-import type { SortingState } from '@tanstack/react-table'
 import { notifyError } from '@/lib/notify'
 import type { UserItem, UserStatus } from '@/types/api'
-import { ActionIcon, Badge, Button, Group, Pagination, Select, Stack, Text, Title, Tooltip } from '@mantine/core'
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Group,
+  Pagination,
+  Select,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core'
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react'
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { SortingState } from '@tanstack/react-table'
 import { useEffect, useState } from 'react'
-import { UserModal, STATUS_OPTIONS } from './components/UserModal'
+import { STATUS_OPTIONS, UserModal } from './components/UserModal'
 
 const STATUS_COLOR: Record<UserStatus, string> = {
   ACTIVE: 'green',
@@ -32,9 +43,17 @@ export function UserPage() {
   const [sorting, setSorting] = useState<SortingState>([])
 
   const [filterValues, setFilterValues] = useState<{
-    username: string; email: string; status: string[]; roles: string[]; department: string[];
+    username: string
+    email: string
+    status: string[]
+    roles: string[]
+    department: string[]
   }>({
-    username: '', email: '', status: [], roles: [], department: [],
+    username: '',
+    email: '',
+    status: [],
+    roles: [],
+    department: [],
   })
   const [debouncedUsername] = useDebouncedValue(filterValues.username, 1000)
   const [debouncedEmail] = useDebouncedValue(filterValues.email, 1000)
@@ -46,9 +65,13 @@ export function UserPage() {
   useEffect(() => {
     setPage(1)
   }, [
-    debouncedUsername, debouncedEmail,
-    filterValues.status.join(','), filterValues.roles.join(','), filterValues.department.join(','),
-    sorting, pageSize,
+    debouncedUsername,
+    debouncedEmail,
+    filterValues.status.join(','),
+    filterValues.roles.join(','),
+    filterValues.department.join(','),
+    sorting,
+    pageSize,
   ])
 
   const { data: allDepts = [] } = useQuery({
@@ -73,11 +96,19 @@ export function UserPage() {
   const sort = sorting.map((s) => `${s.id},${s.desc ? 'desc' : 'asc'}`)
 
   const { data, isLoading, isFetching, refetch } = useQuery({
-    queryKey: ['users', {
-      username: debouncedUsername, email: debouncedEmail,
-      status: filterValues.status, role: filterValues.roles, deptId: filterValues.department,
-      page, pageSize, sort,
-    }],
+    queryKey: [
+      'users',
+      {
+        username: debouncedUsername,
+        email: debouncedEmail,
+        status: filterValues.status,
+        role: filterValues.roles,
+        deptId: filterValues.department,
+        page,
+        pageSize,
+        sort,
+      },
+    ],
     queryFn: () =>
       usersApi.search({
         username: debouncedUsername || undefined,
@@ -131,7 +162,14 @@ export function UserPage() {
   }
 
   const columns: TableColumn<UserItem>[] = [
-    { id: 'id', header: 'ID', width: 200, accessorFn: (row) => row.id, copyable: true, cell: (row) => row.id },
+    {
+      id: 'id',
+      header: 'ID',
+      width: 200,
+      accessorFn: (row) => row.id,
+      copyable: true,
+      cell: (row) => row.id,
+    },
     {
       id: 'username',
       header: 'Username',
@@ -140,7 +178,11 @@ export function UserPage() {
       enableColumnFilter: true,
       filterPlaceholder: 'Username...',
       accessorFn: (row) => row.username,
-      cell: (row) => <Text fw={500}>{row.username}</Text>,
+      cell: (row) => (
+        <Text fw={500} fz="sm">
+          {row.username}
+        </Text>
+      ),
     },
     {
       id: 'email',
@@ -182,10 +224,14 @@ export function UserPage() {
         <Group gap={4} wrap="wrap">
           {row.roles?.length ? (
             row.roles.map((r) => (
-              <Badge key={r} size="xs" variant="light" color="blue">{r}</Badge>
+              <Badge key={r} size="xs" variant="light" color="blue">
+                {r}
+              </Badge>
             ))
           ) : (
-            <Text size="sm" c="dimmed">—</Text>
+            <Text size="sm" c="dimmed">
+              —
+            </Text>
           )}
         </Group>
       ),
@@ -199,7 +245,11 @@ export function UserPage() {
       filterPlaceholder: 'All...',
       filterOptions: deptOptions,
       accessorFn: (row) => row.deptName ?? '',
-      cell: (row) => <Text size='sm' c={row.deptName ? undefined : 'dimmed'}>{row.deptName ?? '—'}</Text>,
+      cell: (row) => (
+        <Text size="sm" c={row.deptName ? undefined : 'dimmed'}>
+          {row.deptName ?? '—'}
+        </Text>
+      ),
     },
     {
       id: 'actions',
@@ -231,56 +281,59 @@ export function UserPage() {
 
   return (
     <>
-    <title>User Management</title>
-    <Stack gap="sm">
-      <Group justify="space-between" align="center">
-        <Title order={3}>User Management</Title>
-      </Group>
+      <title>User Management</title>
+      <Stack gap="sm">
+        <Group justify="space-between" align="center">
+          <Title order={3}>User Management</Title>
+        </Group>
 
-      <DataTable
-        columns={columns}
-        data={users}
-        keyField="id"
-        loading={isLoading}
-        emptyText="No users found"
-        sorting={sorting}
-        onSortingChange={setSorting}
-        onRefresh={() => refetch()}
-        refreshing={isFetching && !isLoading}
-        columnFilterValues={filterValues}
-        onColumnFilterChange={handleColumnFilterChange}
-        toolbar={
-          <Button size="sm" leftSection={<IconPlus size={14} />} onClick={handleAdd}>
-            Add New
-          </Button>
-        }
-        footer={
-          totalElements > 0 && (
-            <Group justify="space-between" align="center">
-              <Group gap="xs" align="center">
-                <Text size="sm" c="dimmed">Rows per page:</Text>
-                <Select
-                  size="xs"
-                  w={70}
-                  data={PAGE_SIZE_OPTIONS}
-                  value={String(pageSize)}
-                  onChange={(v) => v && setPageSize(Number(v))}
-                  allowDeselect={false}
-                />
-                <Text size="sm" c="dimmed">
-                  {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalElements)} of {totalElements}
-                </Text>
+        <DataTable
+          columns={columns}
+          data={users}
+          keyField="id"
+          loading={isLoading}
+          emptyText="No users found"
+          sorting={sorting}
+          onSortingChange={setSorting}
+          onRefresh={() => refetch()}
+          refreshing={isFetching && !isLoading}
+          columnFilterValues={filterValues}
+          onColumnFilterChange={handleColumnFilterChange}
+          toolbar={
+            <Button size="sm" leftSection={<IconPlus size={14} />} onClick={handleAdd}>
+              Add New
+            </Button>
+          }
+          footer={
+            totalElements > 0 && (
+              <Group justify="space-between" align="center">
+                <Group gap="xs" align="center">
+                  <Text size="sm" c="dimmed">
+                    Rows per page:
+                  </Text>
+                  <Select
+                    size="xs"
+                    w={70}
+                    data={PAGE_SIZE_OPTIONS}
+                    value={String(pageSize)}
+                    onChange={(v) => v && setPageSize(Number(v))}
+                    allowDeselect={false}
+                  />
+                  <Text size="sm" c="dimmed">
+                    {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalElements)} of{' '}
+                    {totalElements}
+                  </Text>
+                </Group>
+                {totalPages > 1 && (
+                  <Pagination size="sm" total={totalPages} value={page} onChange={setPage} />
+                )}
               </Group>
-              {totalPages > 1 && (
-                <Pagination size="sm" total={totalPages} value={page} onChange={setPage} />
-              )}
-            </Group>
-          )
-        }
-      />
+            )
+          }
+        />
 
-      <UserModal opened={modalOpened} onClose={closeModal} editItem={editItem} />
-    </Stack>
+        <UserModal opened={modalOpened} onClose={closeModal} editItem={editItem} />
+      </Stack>
     </>
   )
 }

@@ -1,10 +1,11 @@
 import { notificationsApi, type SendToUserPayload } from '@/api/notifications.api'
+import { usersApi } from '@/api/users.api'
 import { notifyError } from '@/lib/notify'
 import { Button, Select, Stack, Textarea, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { IconSend } from '@tabler/icons-react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 const TYPE_OPTIONS = [
   { value: 'SYSTEM',  label: 'System' },
@@ -12,6 +13,17 @@ const TYPE_OPTIONS = [
 ]
 
 export function SendToUserForm() {
+  const { data: usersData } = useQuery({
+    queryKey: ['users-select'],
+    queryFn: () => usersApi.search({ size: 200 }),
+    staleTime: 60_000,
+  })
+
+  const userOptions = (usersData?.content ?? []).map((u) => ({
+    value: u.username,
+    label: `${u.username} — ${u.email}`,
+  }))
+
   const form = useForm<SendToUserPayload>({
     initialValues: { recipient: '', type: 'SYSTEM', title: '', body: '', targetUrl: '' },
     validate: {
@@ -37,10 +49,13 @@ export function SendToUserForm() {
   return (
     <form onSubmit={form.onSubmit((v) => mutation.mutate(v))}>
       <Stack>
-        <TextInput
+        <Select
           label="Recipient username"
-          placeholder="e.g. john.doe"
+          placeholder="Search by username..."
           required
+          searchable
+          data={userOptions}
+          nothingFoundMessage="No users found"
           {...form.getInputProps('recipient')}
         />
         <Select label="Type" data={TYPE_OPTIONS} {...form.getInputProps('type')} />

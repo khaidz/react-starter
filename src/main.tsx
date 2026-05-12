@@ -12,6 +12,7 @@ import '@mantine/dropzone/styles.css'
 import './index.css'
 import App from './App.tsx'
 import { GlobalLoading } from '@/components/global-loading'
+import { DateTimePicker } from '@mantine/dates'
 
 const inputLabelStyles = {
   label: { color: '#171c22', fontWeight: 400, fontSize: '0.875rem' },
@@ -20,10 +21,10 @@ const inputLabelStyles = {
 const theme = createTheme({
   fontFamily: 'Inter, sans-serif',
   fontSizes: {
-    xs: rem(10),
-    sm: rem(12),
-    md: rem(14),
-    lg: rem(16),
+    xs: rem(12),
+    sm: rem(14),
+    md: rem(16),
+    lg: rem(18),
     xl: rem(20),
   },
   primaryColor: 'vibBlue',
@@ -63,6 +64,7 @@ const theme = createTheme({
     MultiSelect: { styles: inputLabelStyles },
     DateInput: { styles: inputLabelStyles },
     DatePickerInput: { styles: inputLabelStyles },
+    DateTimePicker: { styles: inputLabelStyles },
   },
 })
 

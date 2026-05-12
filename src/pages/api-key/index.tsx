@@ -2,7 +2,18 @@ import { apiKeysApi } from '@/api/api-keys.api'
 import { DataTable, type TableColumn } from '@/components/data-table'
 import { notifyError } from '@/lib/notify'
 import type { ApiKeyItem, ApiKeyStatus } from '@/types/api'
-import { ActionIcon, Badge, Button, Group, Pagination, Select, Stack, Text, Title, Tooltip } from '@mantine/core'
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Group,
+  Pagination,
+  Select,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core'
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
@@ -25,7 +36,8 @@ const STATUS_COLOR: Record<ApiKeyStatus, string> = {
 export function ApiKeyPage() {
   const queryClient = useQueryClient()
   const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false)
-  const [createdKeyModalOpened, { open: openCreatedModal, close: closeCreatedModal }] = useDisclosure(false)
+  const [createdKeyModalOpened, { open: openCreatedModal, close: closeCreatedModal }] =
+    useDisclosure(false)
   const [editItem, setEditItem] = useState<ApiKeyItem | null>(null)
   const [createdKey, setCreatedKey] = useState<ApiKeyItem | null>(null)
   const [page, setPage] = useState(1)
@@ -36,11 +48,19 @@ export function ApiKeyPage() {
 
   const sort = sorting.map((s) => `${s.id},${s.desc ? 'desc' : 'asc'}`)
 
-  useEffect(() => { setPage(1) }, [debouncedName, sorting, pageSize])
+  useEffect(() => {
+    setPage(1)
+  }, [debouncedName, sorting, pageSize])
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['api-keys', 'paged', { name: debouncedName, page, pageSize, sort }],
-    queryFn: () => apiKeysApi.search({ name: debouncedName || undefined, page, size: pageSize, sort: sort.length ? sort : undefined }),
+    queryFn: () =>
+      apiKeysApi.search({
+        name: debouncedName || undefined,
+        page,
+        size: pageSize,
+        sort: sort.length ? sort : undefined,
+      }),
     placeholderData: keepPreviousData,
   })
 
@@ -114,7 +134,14 @@ export function ApiKeyPage() {
   }
 
   const columns: TableColumn<ApiKeyItem>[] = [
-    { id: 'id', header: 'ID', width: 200, accessorFn: (row) => row.id, copyable: true, cell: (row) => row.id },
+    {
+      id: 'id',
+      header: 'ID',
+      width: 200,
+      accessorFn: (row) => row.id,
+      copyable: true,
+      cell: (row) => row.id,
+    },
     {
       id: 'name',
       header: 'Name',
@@ -122,12 +149,20 @@ export function ApiKeyPage() {
       enableColumnFilter: true,
       accessorFn: (row) => row.name,
       filterPlaceholder: 'Search by name...',
-      cell: (row) => <Text fw={500}>{row.name}</Text>,
+      cell: (row) => (
+        <Text fw={500} fz="sm">
+          {row.name}
+        </Text>
+      ),
     },
     {
       id: 'description',
       header: 'Description',
-      cell: (row) => <Text c={row.description ? undefined : 'dimmed'}>{row.description || '—'}</Text>,
+      cell: (row) => (
+        <Text c={row.description ? undefined : 'dimmed'} fz="sm">
+          {row.description || '—'}
+        </Text>
+      ),
     },
     {
       id: 'keyValue',
@@ -153,13 +188,21 @@ export function ApiKeyPage() {
         row.allowedPermissions?.length > 0 ? (
           <Group gap={4} wrap="wrap">
             {row.allowedPermissions.map((p) => (
-              <Badge key={p.id} size="xs" variant="outline" color="violet" style={{textTransform: 'inherit'}}>
+              <Badge
+                key={p.id}
+                size="xs"
+                variant="outline"
+                color="violet"
+                style={{ textTransform: 'inherit' }}
+              >
                 {p.name}
               </Badge>
             ))}
           </Group>
         ) : (
-          <Text size="sm" c="dimmed" fs="italic">unrestricted</Text>
+          <Text size="sm" c="dimmed" fs="italic">
+            unrestricted
+          </Text>
         ),
     },
     {
@@ -223,57 +266,69 @@ export function ApiKeyPage() {
 
   return (
     <>
-    <title>API Key Management</title>
-    <Stack gap="sm">
-      <Group justify="space-between" align="center">
-        <Title order={3}>API Key Management</Title>
-      </Group>
+      <title>API Key Management</title>
+      <Stack gap="sm">
+        <Group justify="space-between" align="center">
+          <Title order={3}>API Key Management</Title>
+        </Group>
 
-      <DataTable
-        columns={columns}
-        data={apiKeys}
-        keyField="id"
-        loading={isLoading}
-        emptyText="No API keys found"
-        sorting={sorting}
-        onSortingChange={setSorting}
-        onRefresh={() => refetch()}
-        refreshing={isFetching && !isLoading}
-        columnFilterValues={filterValues}
-        onColumnFilterChange={handleColumnFilterChange}
-        toolbar={
-          <Button size="sm" leftSection={<IconPlus size={14} />} onClick={handleAdd}>
-            Create Key
-          </Button>
-        }
-        footer={
-          totalElements > 0 && (
-            <Group justify="space-between" align="center">
-              <Group gap="xs" align="center">
-                <Text size="sm" c="dimmed">Rows per page:</Text>
-                <Select
-                  size="xs"
-                  w={70}
-                  data={PAGE_SIZE_OPTIONS}
-                  value={String(pageSize)}
-                  onChange={(v) => v && setPageSize(Number(v))}
-                  allowDeselect={false}
-                />
-                <Text size="sm" c="dimmed">
-                  {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalElements)} of {totalElements}
-                </Text>
+        <DataTable
+          columns={columns}
+          data={apiKeys}
+          keyField="id"
+          loading={isLoading}
+          emptyText="No API keys found"
+          sorting={sorting}
+          onSortingChange={setSorting}
+          onRefresh={() => refetch()}
+          refreshing={isFetching && !isLoading}
+          columnFilterValues={filterValues}
+          onColumnFilterChange={handleColumnFilterChange}
+          toolbar={
+            <Button size="sm" leftSection={<IconPlus size={14} />} onClick={handleAdd}>
+              Create Key
+            </Button>
+          }
+          footer={
+            totalElements > 0 && (
+              <Group justify="space-between" align="center">
+                <Group gap="xs" align="center">
+                  <Text size="sm" c="dimmed">
+                    Rows per page:
+                  </Text>
+                  <Select
+                    size="xs"
+                    w={70}
+                    data={PAGE_SIZE_OPTIONS}
+                    value={String(pageSize)}
+                    onChange={(v) => v && setPageSize(Number(v))}
+                    allowDeselect={false}
+                  />
+                  <Text size="sm" c="dimmed">
+                    {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalElements)} of{' '}
+                    {totalElements}
+                  </Text>
+                </Group>
+                {totalPages > 1 && (
+                  <Pagination size="sm" total={totalPages} value={page} onChange={setPage} />
+                )}
               </Group>
-              {totalPages > 1 && (
-                <Pagination size="sm" total={totalPages} value={page} onChange={setPage} />
-              )}
-            </Group>
-          )
-        }
-      />
+            )
+          }
+        />
 
-      <ApiKeyModal opened={modalOpened} onClose={closeModal} editItem={editItem} onCreated={handleCreated} />
-      <CreatedKeyModal opened={createdKeyModalOpened} onClose={closeCreatedModal} apiKey={createdKey} />
-    </Stack>
+        <ApiKeyModal
+          opened={modalOpened}
+          onClose={closeModal}
+          editItem={editItem}
+          onCreated={handleCreated}
+        />
+        <CreatedKeyModal
+          opened={createdKeyModalOpened}
+          onClose={closeCreatedModal}
+          apiKey={createdKey}
+        />
+      </Stack>
     </>
   )
 }

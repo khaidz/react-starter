@@ -18,6 +18,9 @@ const UserPage = lazy(() =>
 const ApiKeyPage = lazy(() =>
   import('@/pages/api-key').then((m) => ({ default: m.ApiKeyPage })),
 )
+const NotificationsPage = lazy(() =>
+  import('@/pages/notifications').then((m) => ({ default: m.NotificationsPage })),
+)
 const NotificationAdminPage = lazy(() =>
   import('@/pages/notification').then((m) => ({ default: m.NotificationAdminPage })),
 )
@@ -54,6 +57,10 @@ export const privateRoutes: RouteConfig[] = [
     path: '/api-keys',
     component: ApiKeyPage,
     roles: [Roles.ADMIN],
+  },
+  {
+    path: '/notifications',
+    component: NotificationsPage,
   },
   {
     path: '/notifications/admin',

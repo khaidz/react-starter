@@ -4,6 +4,7 @@ import { notifyError } from '@/lib/notify'
 import { modals } from '@mantine/modals'
 import {
   ActionIcon,
+  Anchor,
   Badge,
   Box,
   Divider,
@@ -18,12 +19,20 @@ import {
   UnstyledButton,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconBell, IconCheck, IconTrash } from '@tabler/icons-react'
+import { IconBell, IconCheck, IconMessage, IconInfoCircle, IconTrash } from '@tabler/icons-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { useNotificationSocket } from '@/hooks/use-notification-socket'
 import { notifications as mantineNotifications } from '@mantine/notifications'
 import styles from './notification-bell.module.scss'
+
+function typeIcon(type: string) {
+  switch (type) {
+    case 'COMMENT': return <IconMessage size={14} color="var(--mantine-color-green-6)" />
+    case 'SYSTEM':  return <IconInfoCircle size={14} color="var(--mantine-color-blue-6)" />
+    default:        return <IconBell size={14} color="var(--mantine-color-gray-5)" />
+  }
+}
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime()
@@ -58,9 +67,12 @@ function NotificationRow({
     >
       <div className={styles.rowContent}>
         <Group justify="space-between" align="flex-start" wrap="nowrap" gap={4}>
-          <Text size="sm" fw={item.read ? 400 : 500} lineClamp={1}>
-            {item.title}
-          </Text>
+          <Group gap={5} wrap="nowrap" style={{ minWidth: 0 }}>
+            <Box style={{ flexShrink: 0, lineHeight: 1 }}>{typeIcon(item.type)}</Box>
+            <Text size="sm" fw={item.read ? 400 : 500} lineClamp={1}>
+              {item.title}
+            </Text>
+          </Group>
           <Text size="sm" c="dimmed" style={{ flexShrink: 0 }}>
             {timeAgo(item.createdAt)}
           </Text>
@@ -92,6 +104,7 @@ function NotificationRow({
 export function NotificationBell() {
   const [opened, { toggle, close }] = useDisclosure(false)
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const { data: unreadData } = useQuery({
     queryKey: ['notifications-unread'],
@@ -264,14 +277,20 @@ export function NotificationBell() {
         )}
 
         {/* Footer */}
-        {data && data.totalPages > 1 && (
-          <>
-            <Divider />
-            <Box px="sm" py="xs" ta="center">
-              <Text size="sm" c="dimmed">{data.totalElements} total notifications</Text>
-            </Box>
-          </>
-        )}
+        <Divider />
+        <Box px="sm" py="xs" ta="center">
+          <Anchor
+            size="sm"
+            href="/notifications"
+            onClick={(e) => {
+              e.preventDefault()
+              close()
+              navigate('/notifications')
+            }}
+          >
+            View all notifications
+          </Anchor>
+        </Box>
       </Popover.Dropdown>
     </Popover>
   )

@@ -2,7 +2,18 @@ import { rolesApi } from '@/api/roles.api'
 import { DataTable, type TableColumn } from '@/components/data-table'
 import { notifyError } from '@/lib/notify'
 import type { RoleItem } from '@/types/api'
-import { ActionIcon, Badge, Button, Group, Pagination, Select, Stack, Text, Title, Tooltip } from '@mantine/core'
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Group,
+  Pagination,
+  Select,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core'
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { notifications } from '@mantine/notifications'
@@ -26,11 +37,19 @@ export function RolePage() {
 
   const sort = sorting.map((s) => `${s.id},${s.desc ? 'desc' : 'asc'}`)
 
-  useEffect(() => { setPage(1) }, [debouncedName, sorting, pageSize])
+  useEffect(() => {
+    setPage(1)
+  }, [debouncedName, sorting, pageSize])
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['roles', 'paged', { name: debouncedName, page, pageSize, sort }],
-    queryFn: () => rolesApi.searchPaged({ name: debouncedName || undefined, page, size: pageSize, sort: sort.length ? sort : undefined }),
+    queryFn: () =>
+      rolesApi.searchPaged({
+        name: debouncedName || undefined,
+        page,
+        size: pageSize,
+        sort: sort.length ? sort : undefined,
+      }),
     placeholderData: keepPreviousData,
   })
 
@@ -85,12 +104,16 @@ export function RolePage() {
       enableColumnFilter: true,
       accessorFn: (row) => row.name,
       filterPlaceholder: 'Search by name...',
-      cell: (row) => row.name,
+      cell: (row) => <Text fz="sm">{row.name}</Text>,
     },
     {
       id: 'description',
       header: 'Description',
-      cell: (row) => <Text c={row.description ? undefined : 'dimmed'}>{row.description || '—'}</Text>,
+      cell: (row) => (
+        <Text c={row.description ? undefined : 'dimmed'} fz="sm">
+          {row.description || '—'}
+        </Text>
+      ),
     },
     {
       id: 'permissions',
@@ -99,10 +122,14 @@ export function RolePage() {
         <Group gap={4} wrap="wrap">
           {row.permissions?.length ? (
             row.permissions.map((p) => (
-              <Badge key={p.id} size="xs" variant="light">{p.name}</Badge>
+              <Badge key={p.id} size="xs" variant="light">
+                {p.name}
+              </Badge>
             ))
           ) : (
-            <Text size="sm" c="dimmed">—</Text>
+            <Text size="sm" c="dimmed">
+              —
+            </Text>
           )}
         </Group>
       ),
@@ -137,56 +164,59 @@ export function RolePage() {
 
   return (
     <>
-    <title>Role Management</title>
-    <Stack gap="sm">
-      <Group justify="space-between" align="center">
-        <Title order={3}>Role Management</Title>
-      </Group>
+      <title>Role Management</title>
+      <Stack gap="sm">
+        <Group justify="space-between" align="center">
+          <Title order={3}>Role Management</Title>
+        </Group>
 
-      <DataTable
-        columns={columns}
-        data={roles}
-        keyField="id"
-        loading={isLoading}
-        emptyText="No roles found"
-        sorting={sorting}
-        onSortingChange={setSorting}
-        onRefresh={() => refetch()}
-        refreshing={isFetching && !isLoading}
-        columnFilterValues={filterValues}
-        onColumnFilterChange={handleColumnFilterChange}
-        toolbar={
-          <Button size="sm" leftSection={<IconPlus size={14} />} onClick={handleAdd}>
-            Add New
-          </Button>
-        }
-        footer={
-          totalElements > 0 && (
-            <Group justify="space-between" align="center">
-              <Group gap="xs" align="center">
-                <Text size="sm" c="dimmed">Rows per page:</Text>
-                <Select
-                  size="xs"
-                  w={70}
-                  data={PAGE_SIZE_OPTIONS}
-                  value={String(pageSize)}
-                  onChange={(v) => v && setPageSize(Number(v))}
-                  allowDeselect={false}
-                />
-                <Text size="sm" c="dimmed">
-                  {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalElements)} of {totalElements}
-                </Text>
+        <DataTable
+          columns={columns}
+          data={roles}
+          keyField="id"
+          loading={isLoading}
+          emptyText="No roles found"
+          sorting={sorting}
+          onSortingChange={setSorting}
+          onRefresh={() => refetch()}
+          refreshing={isFetching && !isLoading}
+          columnFilterValues={filterValues}
+          onColumnFilterChange={handleColumnFilterChange}
+          toolbar={
+            <Button size="sm" leftSection={<IconPlus size={14} />} onClick={handleAdd}>
+              Add New
+            </Button>
+          }
+          footer={
+            totalElements > 0 && (
+              <Group justify="space-between" align="center">
+                <Group gap="xs" align="center">
+                  <Text size="sm" c="dimmed">
+                    Rows per page:
+                  </Text>
+                  <Select
+                    size="xs"
+                    w={70}
+                    data={PAGE_SIZE_OPTIONS}
+                    value={String(pageSize)}
+                    onChange={(v) => v && setPageSize(Number(v))}
+                    allowDeselect={false}
+                  />
+                  <Text size="sm" c="dimmed">
+                    {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalElements)} of{' '}
+                    {totalElements}
+                  </Text>
+                </Group>
+                {totalPages > 1 && (
+                  <Pagination size="sm" total={totalPages} value={page} onChange={setPage} />
+                )}
               </Group>
-              {totalPages > 1 && (
-                <Pagination size="sm" total={totalPages} value={page} onChange={setPage} />
-              )}
-            </Group>
-          )
-        }
-      />
+            )
+          }
+        />
 
-      <RoleModal opened={modalOpened} onClose={closeModal} editItem={editItem} />
-    </Stack>
+        <RoleModal opened={modalOpened} onClose={closeModal} editItem={editItem} />
+      </Stack>
     </>
   )
 }

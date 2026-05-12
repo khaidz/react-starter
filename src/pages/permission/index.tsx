@@ -93,7 +93,7 @@ export function PermissionPage() {
       header: 'Description',
       accessorFn: (row) => row.description ?? '',
       cell: (row) => (
-        <Text c={row.description ? undefined : 'dimmed'}>{row.description || '—'}</Text>
+        <Text c={row.description ? undefined : 'dimmed'} size='sm'>{row.description || '—'}</Text>
       ),
     },
     {
